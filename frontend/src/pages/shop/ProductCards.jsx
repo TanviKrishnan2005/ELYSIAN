@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import RatingStars from '../../components/RatingStars';
 
 const ProductCards = ({ products = [] }) => {
   return (
@@ -35,6 +36,7 @@ const ProductCards = ({ products = [] }) => {
           <div className='product__card__content'>
             <h4>{product.name}</h4>
             <p>{product.price} {product.oldPrice ? <s>{product?.oldPrice}</s>:null}</p>
+            <RatingStars rating={product.rating}/>
           </div>
         </div>
       ))}

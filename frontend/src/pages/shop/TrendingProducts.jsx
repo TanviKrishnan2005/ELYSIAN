@@ -14,7 +14,11 @@ const TrendingProducts = () => {
 
 
     {/* product crads */}
-    <ProductCards products={products}/>
+    <div className='mt-12'><ProductCards products={products}/></div>
+    {/* load more */}
+    <div> 
+
+    </div>
     </section>
   )
 }
