@@ -382,6 +382,7 @@ nav {
 
 .banner__card {
   text-align: center;
+  
 }
 
 .banner__card span {
@@ -400,6 +401,7 @@ nav {
 
 .banner__card p {
   color: var(--text-light);
+  font-size: 1.25rem;
 }
 
 .blog__container {
