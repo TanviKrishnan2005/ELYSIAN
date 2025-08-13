@@ -14,10 +14,14 @@ const TrendingProducts = () => {
 
 
     {/* product crads */}
-    <div className='mt-12'><ProductCards products={products}/></div>
-    {/* load more */}
-    <div> 
-
+    <div className='mt-12'><ProductCards products={products.slice(0,VisibleProducts)}/></div>
+    {/* load more btn*/}
+    <div className='product__btn'> {
+      VisibleProducts< products.length &&(
+        <button className='btn' onClick={loadMoreProducts}> LOAD MORE!</button>
+      )
+      }
+   
     </div>
     </section>
   )
