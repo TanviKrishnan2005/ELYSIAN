@@ -6,6 +6,7 @@ import TrendingProducts from '../shop/TrendingProducts'
 import DealSection from './DealSection'
 import PromoBanner from './PromoBanner'
 import Blogs from '../blogs/Blogs'
+import Search from '../search/Search'
 
 const Home = () => {
   return (
@@ -17,6 +18,7 @@ const Home = () => {
     <DealSection/>
     <PromoBanner/>
     <Blogs/>
+   
     </>
   )
 }
