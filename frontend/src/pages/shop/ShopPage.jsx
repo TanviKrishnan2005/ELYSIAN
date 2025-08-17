@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import productsData from '../../data/products.json'
 import ProductCards from './ProductCards';
+import ShopFiltering from './ShopFiltering';
 
 const filter ={
     categories:['all','accessories','dress','jewellery','cosmetics'],
@@ -85,7 +86,11 @@ const ShopPage = () => {
     }}
   >
     {/* left side */}
-    <div>Shop Filtering</div>
+    <ShopFiltering filters={filter} 
+    filtersState={filterState} 
+    setFiltersState={setFiltersState} 
+    clearFilters={clearFilters}
+    />
 
     {/* right side */}
     <div>
