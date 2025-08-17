@@ -1,0 +1,110 @@
+import React, { useEffect, useState } from 'react'
+import productsData from '../../data/products.json'
+import ProductCards from './ProductCards';
+
+const filter ={
+    categories:['all','accessories','dress','jewellery','cosmetics'],
+    colors : ['all','black','gold','red','blue','silver','beige','green'],
+    priceRange :[
+        {label:'Under $50',min:0,max:50},
+        {label:'$50-$100',min:50,max:100},
+        {label:'$100-$200',min:100,max:200},
+        {label:'$200 and above',min:200,max:Infinity},
+        
+    ]
+};
+const ShopPage = () => {
+    const [products,setProducts]=useState(productsData);
+    const [filterState,setFiltersState] = useState({
+        category:'all',
+        color:'all',
+        priceRange:''
+    });
+
+    // filtering fuctions
+
+    const applyFiltering =()=>{
+       let filteredProduct = productsData;
+
+    //    filter by category
+    if(filterState.category && filterState.category!=='all'){
+        filteredProduct=filteredProduct.filter(products=>products.category===
+            filterState.category)
+    }
+    //filter by color
+    if(filterState.color && filterState.color !== 'all'){
+        filteredProduct= filteredProduct.filter(products=>products.color===filterState.color)
+    }
+
+    //filter by price range
+        if(filterState.priceRange){
+            const [minPrice,maxPrice]= filterState.priceRange.split('-').map(Number);
+            filteredProduct=filteredProduct.filter(products=>products.price>=minPrice && products.price<=maxPrice)
+        }
+        setProducts(filteredProduct);
+    }
+    useEffect(()=>{
+        applyFiltering()
+    },[filterState])
+
+    // clear the filter
+    const clearFilters=()=>{
+        setFiltersState({
+        category:'all',
+        color:'all',
+        priceRange:''
+        })
+    }
+
+    return (
+        <>
+
+            <section
+                className="section__container"
+                style={{ backgroundColor: '#f4e5ec' }}
+            >
+                <h2 className="section__header capitalize">Shop Page</h2>
+                <p className="section__subheader">
+                    GO GET TO SHOPPING!
+                </p>
+            </section>
+
+            <section 
+  style={{
+    width: "100%", 
+    maxWidth: "1200px", 
+    margin: "0 auto", 
+    padding: "1rem"
+  }}
+>
+  <div 
+    style={{
+      display: "flex",
+      flexDirection: "row", 
+      gap: "3rem" 
+    }}
+  >
+    {/* left side */}
+    <div>Shop Filtering</div>
+
+    {/* right side */}
+    <div>
+      <h3 
+        style={{
+          fontSize: "1.25rem", 
+          fontWeight: "500", 
+          marginBottom: "1rem"
+        }}
+      >
+        Products Available: {products.length}
+      </h3>
+      <ProductCards products={products}/>
+    </div>
+  </div>
+</section>
+
+        </>
+    )
+}
+
+export default ShopPage
