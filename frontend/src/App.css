@@ -601,3 +601,94 @@ input[type="number"]::-webkit-outer-spin-button {
 /* ✅ app.css or index.css */
 
 
+.text-primary-hover {
+  cursor: pointer; /* optional, makes it feel clickable */
+  transition: color 0.2s ease-in-out;
+}
+
+.text-primary-hover:hover {
+  color: #ed3849;
+}
+.section-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.product-image {
+  width: 100%;
+  height: auto;
+  border-radius: 8px; /* rounded-md */
+  object-fit: cover;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+.text-primary {
+  color: #ed3849;
+}
+
+.btn-primary {
+  background-color: #ed3849;
+  color: white;
+  padding: 6px 18px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.btn-primary:hover {
+  background-color: #c72d3a; /* darker red on hover */
+}
+/* Product Detail Layout */
+.product-detail-wrapper {
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap; /* responsive for mobile */
+    align-items: flex-start;
+}
+
+.product-image-wrapper {
+    flex: 1 1 40%;
+}
+
+.product-details {
+    flex: 1 1 55%;
+}
+
+/* Responsive for small screens */
+@media (max-width: 768px) {
+    .product-detail-wrapper {
+        flex-direction: column;
+    }
+    .product-image-wrapper,
+    .product-details {
+        flex: 1 1 100%;
+    }
+}
+
+/* Reusable classes from previous fix */
+.text-primary {
+    color: #ed3849;
+}
+
+.btn-primary {
+    background-color: #ed3849;
+    color: white;
+    padding: 6px 18px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.btn-primary:hover {
+    background-color: #c72d3a;
+}
+
+.product-image {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    object-fit: cover;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
