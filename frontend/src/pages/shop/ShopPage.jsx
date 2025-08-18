@@ -5,7 +5,7 @@ import ShopFiltering from './ShopFiltering';
 
 const filter ={
     categories:['all','accessories','dress','jewellery','cosmetics'],
-    colors : ['all','black','gold','red','blue','silver','beige','green'],
+    colors : ['all','black','red','gold','blue','silver','beige','green'],
     priceRange :[
         {label:'Under $50',min:0,max:50},
         {label:'$50-$100',min:50,max:100},
