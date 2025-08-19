@@ -1,7 +1,12 @@
 import React from 'react'
-import { Link } from 'react-router-dom'  // ✅ Add this import
+import { Link } from 'react-router-dom'
+import { useSelector } from 'react-redux'
 
 const Navbar = () => {
+    const products = useSelector((state) => state.cart.products);
+
+
+
     return (
         <header className='fixed-nav-bar w-nav'>
             <nav className='max-w-screen-2xl mx-auto px-4 flex justify-between item-center'>
@@ -28,13 +33,13 @@ const Navbar = () => {
                     <span>
                         <button className='hover:text-primary'>
                             <i className="ri-shopping-bag-fill"></i>
-                            <sup className="text-sm inline-block px-1.5 text-white rounded-full bg-red-500 text-center">0</sup>
+                            <sup className="text-sm inline-block px-1.5 text-white rounded-full bg-red-500 text-center">{products.length}</sup>
 
                         </button>
                     </span>
                     <span>
                         <Link to="login">
-                        <i className="ri-user-line"></i>
+                            <i className="ri-user-line"></i>
                         </Link>
                     </span>
 
@@ -46,4 +51,3 @@ const Navbar = () => {
 }
 
 export default Navbar
- 

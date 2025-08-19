@@ -1,8 +1,16 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import RatingStars from '../../components/RatingStars';
+import { addToCart } from '../../redux/features/cart/cartSlice';
+import { useDispatch } from 'react-redux';
 
 const ProductCards = ({ products = [] }) => {
+  const dispatch =useDispatch();
+
+  const handleAddToCart =(product)=>{
+    dispatch(addToCart(product))
+  }
+
   return (
     <div className="product__grid">
       {products.map((product, index) => (
@@ -22,7 +30,12 @@ const ProductCards = ({ products = [] }) => {
 
             {/* Cart Button */}
             <div className="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-              <button className="bg-red-600 p-2 text-white hover:bg-blue-800 rounded-full shadow-lg">
+              <button 
+              onClick ={(e)=>{
+                e.stopPropagation();
+                handleAddToCart(product)
+              }}
+              className="bg-red-600 p-2 text-white hover:bg-blue-800 rounded-full shadow-lg">
                 <i className="ri-shopping-cart-2-line text-lg"></i>
               </button>
             </div>
