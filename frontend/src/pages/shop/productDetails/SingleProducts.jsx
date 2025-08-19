@@ -7,7 +7,7 @@ const SingleProducts = () => {
 
     return (
         <>
-            {/* Breadcrumb / Header Section */}
+            {/* Header Section */}
             <section className="section__container" style={{ backgroundColor: '#f4e5ec' }}>
                 <h2 className="section__header capitalize">Single Item</h2>
                 <div className="section__subheader" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '0.5rem', marginTop: '0.5rem' }}>
@@ -60,6 +60,15 @@ const SingleProducts = () => {
 
                 </div>
             </section>
+
+            {/* DISPLAY REVIEW */}
+            {/* THIS WILL BE ADDED ONE THERE ARE APIS */}
+
+            <section className='section__container mt-8'>
+                REVIEWS HERE
+            </section>
+
+
         </>
     )
 }
