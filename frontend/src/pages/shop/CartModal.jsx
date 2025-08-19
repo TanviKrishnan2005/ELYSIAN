@@ -29,18 +29,20 @@ const CartModal = ({ products, isOpen, onClose }) => {
         </div>
 
         {/* Cart Items */}
-        {/* <div className="p-4">
-          {products.length === 0 ? (
-            <p className="text-gray-500">Your cart is empty</p>
-          ) : (
-            products.map((product) => (
-              <div key={product.id} className="border-b py-3">
-                <p className="font-medium">{product.title}</p>
-                <p className="text-sm text-gray-600">${product.price}</p>
-              </div>
-            ))
-          )}
-        </div> */}
+        <div>
+  {
+    products.length === 0 ? (
+      <div>Your cart is empty</div>
+    ) : (
+      products.map((item, index) => (
+        <div key={index}>
+          <span>0{index + 1}</span>
+        </div>
+      ))
+    )
+  }
+</div>
+
       </div>
     </>
   );
