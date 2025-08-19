@@ -1,9 +1,13 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 
 const Navbar = () => {
     const products = useSelector((state) => state.cart.products);
+    const [isCartOpen, setisCartOpen] = useState(false);
+    const handleCartToggle =()=>{
+        setisCartOpen(!isCartOpen)
+    }
 
 
 
@@ -31,7 +35,8 @@ const Navbar = () => {
                         </Link>
                     </span>
                     <span>
-                        <button className='hover:text-primary'>
+                        <button onClick={handleCartToggle}
+                         className='hover:text-primary'>
                             <i className="ri-shopping-bag-fill"></i>
                             <sup className="text-sm inline-block px-1.5 text-white rounded-full bg-red-500 text-center">{products.length}</sup>
 
