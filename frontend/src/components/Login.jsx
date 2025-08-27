@@ -1,6 +1,10 @@
-import React from 'react'
+import React, { useState } from 'react'
 
+import { Link } from "react-router-dom";
 const Login = () => {
+    const [message,setMessage] = useState('')
+    const[email,setEmail]=useState('');
+    const[password,setPassword] = useState('');
   return (
    <section className='h-screen flex items-center justify-center'>
   <div className='max-w-sm border shadow bg-white mx-auto p-8'>
@@ -18,7 +22,18 @@ const Login = () => {
         placeholder='Password' required
         className='w-full bg-gray-100 focus-outline-none px-5 py-3'
         />
+        {
+            message && <p className="text-[red]">{message}</p>
+
+        } 
+
+        <button type ='submit'  className='w-full bg-[#ed3849]  text-white hover:bg-indigo-500 font-medium py-3 rounded-md'>
+           Login
+        </button>
     </form>
+
+    <p className='my-5 italic text-sm text-center'>Don't have an account? 
+      <Link to="/register">Register</Link>here.</p>
   </div>
 </section>
 
