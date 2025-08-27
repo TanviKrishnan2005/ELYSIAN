@@ -49,6 +49,14 @@ const cartSlice = createSlice({
             state.tax = setTax(state);
             state.grandTotal = setGrandTotal(state);
         },
+
+        removeFromCart :(state,action)=>{
+            state.products = state.products.filter((product)=> product.id !== action.payload.id);
+            state.selectedItems = setSelectedItems(state);
+            state.totalPrice = setTotalPrice(state);
+            state.tax = setTax(state);
+            state.grandTotal = setGrandTotal(state);
+        }
     },
 });
 
@@ -68,6 +76,6 @@ export const setGrandTotal = (state) => {
     return setTotalPrice(state) + setTotalPrice(state) * state.taxRate
 }
 
-export const { addToCart,updateQuantity } = cartSlice.actions;
+export const { addToCart,updateQuantity,removeFromCart } = cartSlice.actions;
 
 export default cartSlice.reducer

@@ -1,7 +1,8 @@
 import React from 'react';
 import OrderSummary from"../shop/productDetails/OrderSummary";
 import { useDispatch } from 'react-redux';
-import { updateQuantity } from "../../redux/features/cart/cartSlice"; 
+import { updateQuantity } from "../../redux/features/cart/cartSlice";
+import {removeFromCart} from "../../redux/features/cart/cartSlice" 
 
 const CartModal = ({ products, isOpen, onClose }) => {
   const dispatch = useDispatch();
@@ -10,6 +11,11 @@ const CartModal = ({ products, isOpen, onClose }) => {
     const payload ={type,id}
     dispatch(updateQuantity(payload))
   }
+
+  const handleRemove =(e,id)=>{
+    e.preventDefault()
+    dispatch(removeFromCart({id}))
+  };
 
   return (
     <>
@@ -83,6 +89,7 @@ const CartModal = ({ products, isOpen, onClose }) => {
 
                       <div className='ml-5'>
                         <button
+                        onClick={(e)=> handleRemove(e,item.id)}
                           className='text-red-500 hover:text-red-800 mr-4'
                         >Remove</button>
                       </div>
