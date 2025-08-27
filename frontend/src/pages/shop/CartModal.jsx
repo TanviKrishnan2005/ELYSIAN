@@ -2,7 +2,8 @@ import React from 'react';
 import OrderSummary from"../shop/productDetails/OrderSummary";
 import { useDispatch } from 'react-redux';
 import { updateQuantity } from "../../redux/features/cart/cartSlice";
-import {removeFromCart} from "../../redux/features/cart/cartSlice" 
+import {removeFromCart} from "../../redux/features/cart/cartSlice" ;
+
 
 const CartModal = ({ products, isOpen, onClose }) => {
   const dispatch = useDispatch();
