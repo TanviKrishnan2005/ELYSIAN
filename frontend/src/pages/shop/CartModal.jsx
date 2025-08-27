@@ -1,7 +1,16 @@
 import React from 'react';
 import OrderSummary from"../shop/productDetails/OrderSummary";
+import { useDispatch } from 'react-redux';
+import { updateQuantity } from "../../redux/features/cart/cartSlice"; 
 
 const CartModal = ({ products, isOpen, onClose }) => {
+  const dispatch = useDispatch();
+  const handleQuantity = (type,id)=>{
+    
+    const payload ={type,id}
+    dispatch(updateQuantity(payload))
+  }
+
   return (
     <>
       {/* Black overlay */}
@@ -58,6 +67,7 @@ const CartModal = ({ products, isOpen, onClose }) => {
 
                     <div className='flex flex-row md:justify-start justify-end items-center mt-2'>
                       <button
+                      onClick={()=>handleQuantity("decrement",item.id)}
                         className="size-6 flex items-center justify-center px-1.5 rounded-full bg-gray-200 text-gray-700 hover:bg-[#ed3849] hover:text-white ml-8"
                       >
                         -
@@ -65,6 +75,7 @@ const CartModal = ({ products, isOpen, onClose }) => {
 
                       <span className='px-2 text-center mx-1'>{item.quantity}</span>
                       <button
+                      onClick={()=>handleQuantity("increment",item.id)}
                         className="size-6 flex items-center justify-center px-1.5 rounded-full bg-gray-200 text-gray-700 hover:bg-[#ed3849] hover:text-white "
                       >
                         +

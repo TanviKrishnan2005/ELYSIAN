@@ -14,6 +14,7 @@ const cartSlice = createSlice({
     initialState,
     reducers: {
         addToCart: (state, action) => {
+            console.log("addToCart payload:", action.payload);
             const isExist = state.products.find((product) => product.id === action.payload.id);
             if (!isExist) {
                 state.products.push({ ...action.payload, quantity: 1 })
@@ -27,9 +28,29 @@ const cartSlice = createSlice({
             state.totalPrice = setTotalPrice(state);
             state.tax = setTax(state);
             state.grandTotal = setGrandTotal(state);
-        }
-    }
-})
+        },
+
+        updateQuantity : (state,action)=>{
+            const products = state.products.map((product)=>{
+                if(product.id === action.payload.id){
+                    if(action.payload.type === "increment"){
+                        product.quantity +=1;
+                    }else if(action.payload.type === 'decrement'){
+                        if(product.quantity>1){
+                          product.quantity -=1;  
+                        }
+                    }
+                }
+
+                return product;
+            });
+            state.selectedItems= setSelectedItems(state)
+            state.totalPrice = setTotalPrice(state);
+            state.tax = setTax(state);
+            state.grandTotal = setGrandTotal(state);
+        },
+    },
+});
 
 //utilites function
 
@@ -47,6 +68,6 @@ export const setGrandTotal = (state) => {
     return setTotalPrice(state) + setTotalPrice(state) * state.taxRate
 }
 
-export const { addToCart } = cartSlice.actions;
+export const { addToCart,updateQuantity } = cartSlice.actions;
 
 export default cartSlice.reducer

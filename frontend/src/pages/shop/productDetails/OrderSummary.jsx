@@ -15,8 +15,8 @@ const OrderSummary = () => {
                <h3 className='font-bold'>Grand Tota; :${grandTotal.toFixed(2)}</h3>
             </div>
                <div className='px-4 mb-6'>
-                 <button className='bg-red-500 px-3 py-1.5 text-white mt-2 rounded-md flex justify-between items-center mb-4'><span className='mr-2'>Clear cart</span> <i class= "ri-delete-bin-7-line"></i></button>
-                 <button className='bg-blue-500 px-3 py-1.5 text-white mt-2 rounded-md flex justify-between items-center mb-4'><span className='mr-2'>CHECKOUT</span><i class="ri-bank-card-line"></i></button>
+                 <button className='bg-red-500 px-3 py-1.5 text-white mt-2 rounded-md flex justify-between items-center mb-4'><span className='mr-2'>Clear cart</span> <i className= "ri-delete-bin-7-line"></i></button>
+                 <button className='bg-blue-500 px-3 py-1.5 text-white mt-2 rounded-md flex justify-between items-center mb-4'><span className='mr-2'>CHECKOUT</span><i className="ri-bank-card-line"></i></button>
                 
                </div>
             </div>
