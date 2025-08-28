@@ -5,6 +5,14 @@ const Login = () => {
     const [message,setMessage] = useState('')
     const[email,setEmail]=useState('');
     const[password,setPassword] = useState('');
+    const handlelogin = async(e)=>{
+      e.preventDefault();
+      const data ={
+        email,
+        password
+      }
+        // console.log("Form submitted:", data);
+    }
   return (
    <section className='h-screen flex items-center justify-center'>
   <div className='max-w-sm border shadow bg-white mx-auto p-8'>
@@ -12,13 +20,17 @@ const Login = () => {
 
     {/* form */}
 
-    <form className='space-y-5 max-w-sm mx-auto pt-8'>
+    <form onSubmit={handlelogin}
+    
+    className='space-y-5 max-w-sm mx-auto pt-8'>
         <input type="Email" name ="Email" id="Email" 
+        onChange={(e)=>setEmail(e.target.value)}
         placeholder='Email Address' required
         className='w-full bg-gray-100 focus-outline-none px-5 py-3'
         />
 
         <input type="Password" name ="Password" id="Password" 
+        onChange={(e)=>setPassword(e.target.value)}
         placeholder='Password' required
         className='w-full bg-gray-100 focus-outline-none px-5 py-3'
         />
@@ -33,7 +45,7 @@ const Login = () => {
     </form>
 
     <p className='my-5 italic text-sm text-center'>Don't have an account? 
-      <Link to="/register">Register</Link>here.</p>
+      <Link to="/register" className='text-[red] px-1 underline'>Register</Link>here.</p>
   </div>
 </section>
 
