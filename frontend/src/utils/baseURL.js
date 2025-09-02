@@ -1,3 +1,3 @@
-const getBaseUrl = () =>{
-    return "http://localhost:5000"
+export const getBaseUrl = () =>{
+    return "http://localhost:5000";
 }

@@ -1,53 +1,71 @@
 import React, { useState } from 'react'
+import { useDispatch } from 'react-redux';
 
-import { Link } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
+import { useLoginUserMutation } from '../redux/features/auth/authApi';
 const Login = () => {
-    const [message,setMessage] = useState('')
-    const[email,setEmail]=useState('');
-    const[password,setPassword] = useState('');
-    const handlelogin = async(e)=>{
-      e.preventDefault();
-      const data ={
-        email,
-        password
-      }
-        // console.log("Form submitted:", data);
+  const [message, setMessage] = useState('')
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const dispatch = useDispatch();
+  const [loginUser, { isLoading: loginLoading }] = useLoginUserMutation();
+  const Navigate = useNavigate()
+
+  //handle login
+  const handlelogin = async (e) => {
+    e.preventDefault();
+    const data = {
+      email,
+      password
     }
+
+    try {
+      const response = await loginUser(data).unwrap();
+      // console.log(response)
+      alert("Login successful");
+      Navigate("/")
+
+    } catch (error) {
+      setMessage("Please provide valid email and password")
+    }
+
+  }
   return (
-   <section className='h-screen flex items-center justify-center'>
-  <div className='max-w-sm border shadow bg-white mx-auto p-8'>
-    <h2 className='text-2xl font-semibold pt-5'>Please Login</h2>
+    <section className='h-screen flex items-center justify-center'>
+      <div className='max-w-sm border shadow bg-white mx-auto p-8'>
+        <h2 className='text-2xl font-semibold pt-5'>Please Login</h2>
 
-    {/* form */}
+        {/* form */}
 
-    <form onSubmit={handlelogin}
-    
-    className='space-y-5 max-w-sm mx-auto pt-8'>
-        <input type="Email" name ="Email" id="Email" 
-        onChange={(e)=>setEmail(e.target.value)}
-        placeholder='Email Address' required
-        className='w-full bg-gray-100 focus-outline-none px-5 py-3'
-        />
+        <form onSubmit={handlelogin}
 
-        <input type="Password" name ="Password" id="Password" 
-        onChange={(e)=>setPassword(e.target.value)}
-        placeholder='Password' required
-        className='w-full bg-gray-100 focus-outline-none px-5 py-3'
-        />
-        {
+          className='space-y-5 max-w-sm mx-auto pt-8'>
+          <input type="Email" name="Email" id="Email"
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder='Email Address' required
+            className='w-full bg-gray-100 focus-outline-none px-5 py-3'
+          />
+
+          <input type="Password" name="Password" id="Password"
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder='Password' required
+            className='w-full bg-gray-100 focus-outline-none px-5 py-3'
+          />
+          {
             message && <p className="text-[red]">{message}</p>
 
-        } 
+          }
 
-        <button type ='submit'  className='w-full bg-[#ed3849]  text-white hover:bg-indigo-500 font-medium py-3 rounded-md'>
-           Login
-        </button>
-    </form>
+          <button type='submit' className='w-full bg-[#ed3849]  text-white hover:bg-indigo-500 font-medium py-3 rounded-md'>
+            Login
+          </button>
+        </form>
 
-    <p className='my-5 italic text-sm text-center'>Don't have an account? 
-      <Link to="/register" className='text-[red] px-1 underline'>Register</Link>here.</p>
-  </div>
-</section>
+        <p className='my-5 italic text-sm text-center'>Don't have an account?
+          <Link to="/register" className='text-[red] px-1 underline'>Register</Link>here.</p>
+      </div>
+    </section>
 
   )
 }
