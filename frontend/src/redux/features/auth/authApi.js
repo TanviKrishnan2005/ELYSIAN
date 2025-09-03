@@ -4,10 +4,10 @@ import { getBaseUrl } from "../../../utils/baseURL";
 const authApi = createApi({
   reducerPath: "authApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: `${getBaseUrl()}/api/auth`, // ✅ clean URL
+    baseUrl: `${getBaseUrl()}/api/auth`,
     credentials: "include",
     prepareHeaders: (headers) => {
-      // optional: set JSON header
+
       headers.set("Content-Type", "application/json");
       return headers;
     },
@@ -15,23 +15,61 @@ const authApi = createApi({
   endpoints: (builder) => ({
     registerUser: builder.mutation({
       query: (newUser) => ({
-        url: "/register", // ✅ correctly appends
+        url: "/register",
         method: "POST",
         body: newUser,
       }),
     }),
     loginUser: builder.mutation({
       query: (credentials) => ({
-        url: "/login", // ✅ correctly appends
+        url: "/login",
         method: "POST",
         body: credentials,
+      }),
+    }),
+    logoutUser: builder.mutation({
+      query: () => ({
+        url: "/logout",
+        method: "POST",
+      })
+    }),
+    getUser: builder.query({
+      query: () => ({
+        url: "/users",
+        method: "GET",
+      }),
+      refetchOneMount: true,
+      invalidatesTags: ["Users"],
+    }),
+    deleteUser: builder.mutation({
+      query: (userId) => ({
+        url: `/users/${userId}`,
+        method: "DELETE",
+        body: credentials,
+      }),
+      invalidatesTags: ["Users"],
+    }),
+    updateUserRole: builder.mutation({
+      query: ({ userId, role }) => ({
+        url: `/users/${userId}`,
+        method: "PUT",
+        body: { role },
+      }),
+      refetchOneMount: true,
+      invalidatesTags: ["Users"],
+    }),
+    editProfile: builder.mutation({
+      query: ({ profileData }) => ({
+        url: `/edit-profil`,
+        method: "PATCH",
+        body: profileData
       }),
     }),
   }),
 });
 
-console.log("Base URL:", `${getBaseUrl()}/api/auth`);
 
 
-export const { useRegisterUserMutation, useLoginUserMutation } = authApi;
+
+export const { useRegisterUserMutation, useLoginUserMutation ,useLogoutUserMutation,useGetUserQuery,useDeleteUserMutation,useUpdateUserRoleMutation,useEditProfileMutation} = authApi;
 export default authApi;
