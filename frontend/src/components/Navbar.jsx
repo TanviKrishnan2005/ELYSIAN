@@ -1,12 +1,17 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import CartModal from '../pages/shop/CartModal';
 
 const Navbar = () => {
   const products = useSelector((state) => state.cart.products);
   const [isCartOpen, setIsCartOpen] = useState(false);
-  const handleCartToggle = () => setIsCartOpen(!isCartOpen);
+  const handleCartToggle = () => { setIsCartOpen(!isCartOpen); }
+
+  //show user if logged in
+  const dispatch = () => useDispatch();
+  const { user } = useSelector((state) => state.auth)
+
 
   return (
     <header className="fixed-nav-bar w-nav z-50">
@@ -29,7 +34,6 @@ const Navbar = () => {
             <i className="ri-shopping-bag-fill"></i>
             <span className="absolute -top-2 -right-2 text-xs bg-red-500 text-white rounded-full px-1.5">{products.length}</span>
           </button>
-
           <Link to="/login"><i className="ri-user-line"></i></Link>
         </div>
       </nav>
