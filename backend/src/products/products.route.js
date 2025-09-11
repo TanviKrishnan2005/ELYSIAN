@@ -69,8 +69,8 @@ router.get("/:id", async (req, res) => {
         if (!product) {
             return res.status(404).send({ message: "Product not found" });
         }
-        const review = await Reviews.find({productId}).populate("userId","username email");
-        res.status(200).send({product,review});
+        const review = await Reviews.find({ productId }).populate("userId", "username email");
+        res.status(200).send({ product, review });
     } catch (error) {
         console.error("Error fetching product", error);
         res.status(500).json({ message: "Failed to fetch product" });
@@ -78,22 +78,75 @@ router.get("/:id", async (req, res) => {
     }
 })
 //updates products
-router.patch("/update-product/:id",async (req,res)=>{
+router.patch("/update-product/:id", async (req, res) => {
     try {
         const productId = req.params.id;
-        const updatedProduct = await Products.findByIdAndUpdate(productId,{...req.body},{new:true})
-        if(!updatedProduct){
-            return res.status(404).send({message:"Product not found"});
+        const updatedProduct = await Products.findByIdAndUpdate(productId, { ...req.body }, { new: true })
+        if (!updatedProduct) {
+            return res.status(404).send({ message: "Product not found" });
         }
 
         res.status(200).send({
-            message:"Product updated successfully",
-            product : updatedProduct
+            message: "Product updated successfully",
+            product: updatedProduct
         })
 
     } catch (error) {
         console.error("Error updating product", error);
         res.status(500).json({ message: "Failed to update the product" });
+    }
+})
+//delete a product
+router.delete("/:id", async (req, res) => {
+    try {
+        const productId = req.params.id;
+        const deletedProduct = await Products.findByIdAndDelete(productId);
+
+        if (!deletedProduct) {
+            return res.status(404).send({ message: "Product not found" });
+        }
+        //delete review related to the product
+        await Reviews.deleteMany({ productId: productId })
+
+        res.status(200).send({
+            message: "Product deleted successfully"
+        })
+    } catch (error) {
+        console.error("Error deleting product", error);
+        res.status(500).json({ message: "Failed to delete the product" });
+    }
+})
+//get related product
+router.get("/related/:id", async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        if (!id) {
+            return res.status(400).send({ message: "Product ID is required" })
+        }
+        const product = await Products.findById(id);
+        if (!product) {
+            return res.status(404).send({ message: "Product not found" });
+        }
+        const titleRegex = new RegExp(
+            product.name.split(" ")
+            .filter((word) => word.length > 1)
+            .join("|"), "i"
+        );
+        
+        const relatedProducts = await Products.find({
+            _id:{$ne:id},
+            $or:[
+                {name:{$regex:titleRegex}},
+                {category:product.category},
+            ],
+        });
+
+        res.status(200).send(relatedProducts);
+    } catch (error) {
+        console.error("Error fetching related product", error);
+        res.status(500).json({ message: "Failed to fetch related  product" });
+
     }
 })
 
