@@ -69,11 +69,32 @@ router.get("/:id", async (req, res) => {
         if (!product) {
             return res.status(404).send({ message: "Product not found" });
         }
-        const review = await Reviews.find
+        const review = await Reviews.find({productId}).populate("userId","username email");
+        res.status(200).send({product,review});
     } catch (error) {
         console.error("Error fetching product", error);
         res.status(500).json({ message: "Failed to fetch product" });
 
     }
 })
+//updates products
+router.patch("/update-product/:id",async (req,res)=>{
+    try {
+        const productId = req.params.id;
+        const updatedProduct = await Products.findByIdAndUpdate(productId,{...req.body},{new:true})
+        if(!updatedProduct){
+            return res.status(404).send({message:"Product not found"});
+        }
+
+        res.status(200).send({
+            message:"Product updated successfully",
+            product : updatedProduct
+        })
+
+    } catch (error) {
+        console.error("Error updating product", error);
+        res.status(500).json({ message: "Failed to update the product" });
+    }
+})
+
 module.exports = router;
