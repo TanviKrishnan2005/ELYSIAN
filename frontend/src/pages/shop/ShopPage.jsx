@@ -15,38 +15,16 @@ const filter ={
     ]
 };
 const ShopPage = () => {
-    const [products,setProducts]=useState(productsData);
+    
     const [filterState,setFiltersState] = useState({
         category:'all',
         color:'all',
         priceRange:''
     });
 
-    // filtering fuctions
-
-    const applyFiltering =()=>{
-       let filteredProduct = productsData;
-
-    //    filter by category
-    if(filterState.category && filterState.category!=='all'){
-        filteredProduct=filteredProduct.filter(products=>products.category===
-            filterState.category)
-    }
-    //filter by color
-    if(filterState.color && filterState.color !== 'all'){
-        filteredProduct= filteredProduct.filter(products=>products.color===filterState.color)
-    }
-
-    //filter by price range
-        if(filterState.priceRange){
-            const [minPrice,maxPrice]= filterState.priceRange.split('-').map(Number);
-            filteredProduct=filteredProduct.filter(products=>products.price>=minPrice && products.price<=maxPrice)
-        }
-        setProducts(filteredProduct);
-    }
-    useEffect(()=>{
-        applyFiltering()
-    },[filterState])
+    const [currentPage,setCurrentPage]=useState(1);
+  
+   
 
     // clear the filter
     const clearFilters=()=>{
