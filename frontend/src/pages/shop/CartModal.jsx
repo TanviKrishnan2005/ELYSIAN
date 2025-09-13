@@ -4,11 +4,10 @@ import { useDispatch } from 'react-redux';
 import { updateQuantity } from "../../redux/features/cart/cartSlice";
 import {removeFromCart} from "../../redux/features/cart/cartSlice" ;
 
-
 const CartModal = ({ products, isOpen, onClose }) => {
   const dispatch = useDispatch();
+
   const handleQuantity = (type,id)=>{
-    
     const payload ={type,id}
     dispatch(updateQuantity(payload))
   }
@@ -55,26 +54,24 @@ const CartModal = ({ products, isOpen, onClose }) => {
                   <div className='flex items-center'>
                     <span
                       style={{
-                        marginRight: "1rem",     // mr-4
-                        padding: "0 0.25rem",    // px-1
-                        backgroundColor: '#ed3849', // bg-primary (bootstrap blue, can change)
-                        color: "white",          // text-white
-                        borderRadius: "9999px"   // rounded-full
+                        marginRight: "1rem",     
+                        padding: "0 0.25rem",    
+                        backgroundColor: '#ed3849', 
+                        color: "white",          
+                        borderRadius: "9999px"   
                       }}
                     >
                       0{index + 1}
                     </span>
-                    <img src={item.image} alt="" className='size-12
-                  object-cover mr-4' />
+                    <img src={item.image} alt="" className='size-12 object-cover mr-4' />
                     <div>
-
                       <h5 className='text-lg font-medium'> {item.name}</h5>
                       <p className='text-gray-600 text-sm'>${Number(item.price).toFixed(2)}</p>
                     </div>
 
                     <div className='flex flex-row md:justify-start justify-end items-center mt-2'>
                       <button
-                      onClick={()=>handleQuantity("decrement",item.id)}
+                        onClick={()=>handleQuantity("decrement",item.id)}
                         className="size-6 flex items-center justify-center px-1.5 rounded-full bg-gray-200 text-gray-700 hover:bg-[#ed3849] hover:text-white ml-8"
                       >
                         -
@@ -82,7 +79,7 @@ const CartModal = ({ products, isOpen, onClose }) => {
 
                       <span className='px-2 text-center mx-1'>{item.quantity}</span>
                       <button
-                      onClick={()=>handleQuantity("increment",item.id)}
+                        onClick={()=>handleQuantity("increment",item.id)}
                         className="size-6 flex items-center justify-center px-1.5 rounded-full bg-gray-200 text-gray-700 hover:bg-[#ed3849] hover:text-white "
                       >
                         +
@@ -90,21 +87,19 @@ const CartModal = ({ products, isOpen, onClose }) => {
 
                       <div className='ml-5'>
                         <button
-                        onClick={(e)=> handleRemove(e,item.id)}
+                          onClick={(e)=> handleRemove(e,item.id)}
                           className='text-red-500 hover:text-red-800 mr-4'
                         >Remove</button>
                       </div>
-
                     </div>
-
                   </div>
                 </div>
               ))
             )
           }
         </div>
-        {/* calculation */}
 
+        {/* calculation */}
         {
           products.length>0 &&(
             <OrderSummary/>
@@ -113,6 +108,6 @@ const CartModal = ({ products, isOpen, onClose }) => {
       </div>
     </>
   );
-};
+};  
 
 export default CartModal;

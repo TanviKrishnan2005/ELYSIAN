@@ -1,90 +1,65 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-    products: [],
-    selectedItems: 0,
-    totalPrice: 0,
-    tax: 0,
-    taxRate: 0.05,
-    grandTotal: 0
-}
+  products: [],
+  selectedItems: 0,
+  totalPrice: 0,
+  tax: 0,
+  taxRate: 0.05,
+  grandTotal: 0,
+};
 
 const cartSlice = createSlice({
-    name: 'cart',
-    initialState,
-    reducers: {
-        addToCart: (state, action) => {
-            console.log("addToCart payload:", action.payload);
-            const isExist = state.products.find((product) => product.id === action.payload.id);
-            if (!isExist) {
-                state.products.push({ ...action.payload, quantity: 1 })
-            } else {
-                console.log("Item is already added")
-            };
+  name: 'cart',
+  initialState,
+  reducers: {
+    addToCart: (state, action) => {
+      console.log("addToCart payload:", action.payload);
+      const existingProduct = state.products.find(p => p._id === action.payload._id);
 
+      if (existingProduct) {
+        // Increase quantity if already in cart
+        existingProduct.quantity += 1;
+        console.log("Increased quantity for:", existingProduct.name);
+      } else {
+        // Add new product
+        state.products.push({ ...action.payload, quantity: 1 });
+        console.log("Added to cart:", action.payload.name);
+      }
 
-
-            state.selectedItems = setSelectedItems(state);
-            state.totalPrice = setTotalPrice(state);
-            state.tax = setTax(state);
-            state.grandTotal = setGrandTotal(state);
-        },
-
-        updateQuantity : (state,action)=>{
-            const products = state.products.map((product)=>{
-                if(product.id === action.payload.id){
-                    if(action.payload.type === "increment"){
-                        product.quantity +=1;
-                    }else if(action.payload.type === 'decrement'){
-                        if(product.quantity>1){
-                          product.quantity -=1;  
-                        }
-                    }
-                }
-
-                return product;
-            });
-            state.selectedItems= setSelectedItems(state)
-            state.totalPrice = setTotalPrice(state);
-            state.tax = setTax(state);
-            state.grandTotal = setGrandTotal(state);
-        },
-
-        removeFromCart :(state,action)=>{
-            state.products = state.products.filter((product)=> product.id !== action.payload.id);
-            state.selectedItems = setSelectedItems(state);
-            state.totalPrice = setTotalPrice(state);
-            state.tax = setTax(state);
-            state.grandTotal = setGrandTotal(state);
-        },
-
-        cleanCart:(state,action)=>{
-        state.products= [],
-        state.selectedItems= 0,
-        state.totalPrice= 0,
-        state.tax= 0,
-        state.taxRate= 0.05,
-        state.grandTotal= 0
-        }
+      // Recalculate totals
+      recalcCart(state);
     },
+
+    updateQuantity: (state, action) => {
+      const product = state.products.find(p => p._id === action.payload._id);
+      if (!product) return;
+
+      if (action.payload.type === "increment") product.quantity += 1;
+      else if (action.payload.type === "decrement" && product.quantity > 1) product.quantity -= 1;
+
+      recalcCart(state);
+    },
+
+    removeFromCart: (state, action) => {
+      state.products = state.products.filter(p => p._id !== action.payload._id);
+      recalcCart(state);
+    },
+
+    cleanCart: (state) => {
+      state.products = [];
+      recalcCart(state);
+    },
+  },
 });
 
-//utilites function
+// Utility to recalc cart totals
+const recalcCart = (state) => {
+  state.selectedItems = state.products.reduce((total, p) => total + p.quantity, 0);
+  state.totalPrice = state.products.reduce((total, p) => total + p.quantity * p.price, 0);
+  state.tax = state.totalPrice * state.taxRate;
+  state.grandTotal = state.totalPrice + state.tax;
+};
 
-export const setSelectedItems = (state) => state.products.reduce((total, product) => {
-    return Number(total + product.quantity)
-},0);
-
-export const setTotalPrice = (state) => state.products.reduce((total, product) => {
-    return Number(total + product.quantity * product.price)
-},0);
-
-export const setTax = (state) => setTotalPrice(state) * state.taxRate;
-
-export const setGrandTotal = (state) => {
-    return setTotalPrice(state) + setTotalPrice(state) * state.taxRate
-}
-
-export const { addToCart,updateQuantity,removeFromCart,cleanCart } = cartSlice.actions;
-
-export default cartSlice.reducer
+export const { addToCart, updateQuantity, removeFromCart, cleanCart } = cartSlice.actions;
+export default cartSlice.reducer;
