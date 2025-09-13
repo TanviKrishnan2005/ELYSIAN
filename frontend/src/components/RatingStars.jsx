@@ -1,18 +1,22 @@
-import React from 'react'
+import React from 'react';
 
-const RatingStars = ({rating}) => {
-    const stars=[];
+const RatingStars = ({ rating = 0 }) => {
+  const stars = [];
 
-    for(let i=1;i<=5;i++){
-        stars.push(
-            <span key={i} className={`ri-star${i<=rating?'-fill ':'line'}`}>
+  for (let i = 1; i <= 5; i++) {
+    stars.push(
+      <span
+        key={i}
+        className={`ri-star${i <= rating ? '-fill text-yellow-400' : '-line text-gray-300'} text-xl`}
+      ></span>
+    );
+  }
 
-            </span>
-        )
-    }
   return (
-    <div className='product__rating'>{stars}</div>
-  )
-}
+    <div className="product__rating flex justify-center items-center gap-1">
+      {stars}
+    </div>
+  );
+};
 
-export default RatingStars
+export default RatingStars;

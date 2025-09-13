@@ -57,7 +57,7 @@ const ProductCards = ({ products = [] }) => {
             <p>
               ${product.price} {product.oldPrice && <s>{product.oldPrice}</s>}
             </p>
-            <RatingStars rating={product.rating || 0} />
+            <RatingStars rating={product.rating } />
           </div>
         </div>
       ))}
