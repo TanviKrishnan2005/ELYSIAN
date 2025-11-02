@@ -1,10 +1,19 @@
-import React from 'react';
+import React, { useState } from 'react';
 import commentorIcon from "../../../assets/avatar.png";
 import formatDate from '../../../utils/formatDate';
 import RatingStars from '../../../components/RatingStars';
+import PostAReview from './PostAReview';
 
 const ReviewsCard = ({ reviews }) => {
+  const [isModelOpen, setIsModelOpen] = useState(false)
   const reviewsList = Array.isArray(reviews) ? reviews : [];
+
+  const handleOpenReviewModal = () => {
+    setIsModelOpen(true)
+  }
+  const handleCloseReviewModal = () => {
+    setIsModelOpen(false)
+  }
 
   return (
     <div className='my-6 bg-white p-8 rounded shadow'>
@@ -48,6 +57,19 @@ const ReviewsCard = ({ reviews }) => {
       ) : (
         <p className='text-gray-500'>No reviews yet</p>
       )}
+
+      {/* add review button */}
+      <div className='mt-12'>
+        <button
+          onClick={handleOpenReviewModal}
+          className="px-6 py-3 text-white rounded-md"
+          style={{ backgroundColor: "#ed3849" }}
+        >
+          Add a review
+        </button>
+      </div>
+      {/* revive model */}
+      <PostAReview isModelOpen={isModelOpen} handleClose={handleCloseReviewModal}/>
     </div>
   );
 };
