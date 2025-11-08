@@ -1,6 +1,42 @@
-import React from 'react'
-
+import React, { useState } from 'react';
+import {useParams} from 'react-router-dom';
+import {useSelector} from 'react-redux';
+import productsApi, {useFetchProductByIdQuery} from '../../../redux/features/products/productsApi';
+import {usePostReviewMutation} from '../../../redux/features/reviews/reviewsApi';
 const PostAReview = ({ isModelOpen, handleClose }) => {
+  const{id} = useParams();
+  const {user} = useSelector((state)=>state.auth)
+  const [rating ,setRating ] = useState(0);
+  const [comment,setComment] = useState('');
+
+  const {refetch} = useFetchProductByIdQuery(id,{skip:!id});
+  const [postReview] = usePostReviewMutation()
+
+  const handleRating =(value)=>{
+    setRating(value)
+  }
+
+  const handleSubmit = async(e) =>{
+    e.preventDefault();
+    const newComment ={
+      comment :comment,
+      rating: rating,
+      userId:user?._id,
+      productId:id
+    }
+    try {
+      const response = await postReview(newComment).unwrap();
+      alert("Comment posted successfully!")
+      setComment('');
+      setRating(0);
+      refetch();
+    } catch (error) {
+      alert(error.message)
+    }
+  }
+
+
+
   return (
     <div
       className={`fixed inset-0 bg-black/90 flex items-center justify-center z-40 px-2 ${
@@ -12,7 +48,11 @@ const PostAReview = ({ isModelOpen, handleClose }) => {
         <div className='flex items-center mb-4'>
             {
                 [1,2,3,4,5].map((star)=>(
-                    <span>
+                    <span
+                    key={star}
+                    onClick={()=>handRating(star)}
+                    className='cursor-pointer text-yellow-500 text-lg'
+                    >
                         {
                             rating>=star?(<i className='ri-start-fill'></i>):(<i className='ri-start-line'></i>)
                         }
@@ -20,7 +60,16 @@ const PostAReview = ({ isModelOpen, handleClose }) => {
                 ))
             }
         </div>
-
+        <textarea
+        value ={comment}
+        onChange={(e)=>setComment(e.target.value)}
+        rows="4"
+        className='w-full border border-gray-300 p- rounded-md mb-4'
+        ></textarea>
+        <div className='flex justify-end gap-2'>
+          <button className='px-4 py-2 bg-gray-300 rounded-md'>Cancel</button>
+          <button className='px-4 py-2 bg-red-500 text-white rounded-md '>Submit</button>
+        </div>
       </div>
     </div>
   );
