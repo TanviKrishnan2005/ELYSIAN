@@ -7,33 +7,29 @@ const userSchema = new Schema({
   password: { type: String, required: true },
   role: {
     type: String,
-    default: 'admin',
+    enum: ['user', 'admin'],
+    default: 'user',   // 🔥 FIXED
   },
   profileImage: String,
   bio: { type: String, maxLength: 200 },
   profession: String,
   createdAt: {
     type: Date,
-    default: Date.now
-  }
+    default: Date.now,
+  },
 });
 
-
-//hasing passwords
-userSchema.pre('save' ,async function(next){
-  const user = this;
-  if(!user.isModified('password')) return next();
-  const hashedPassword = await bcrypt.hash(user.password,10);
-  user.password=hashedPassword;
+// hashing passwords
+userSchema.pre('save', async function (next) {
+  if (!this.isModified('password')) return next();
+  this.password = await bcrypt.hash(this.password, 10);
   next();
-})
+});
+
 // match password
-userSchema.methods.comparePassword = function (candidatePassword){
-  return bcrypt.compare(candidatePassword,this.password);
-}
+userSchema.methods.comparePassword = function (candidatePassword) {
+  return bcrypt.compare(candidatePassword, this.password);
+};
 
-
-// ✅ Make sure spelling matches here
 const User = model('User', userSchema);
-
 module.exports = User;

@@ -7,13 +7,14 @@ const authApi = createApi({
     baseUrl: `${getBaseUrl()}/api/auth`,
     credentials: "include",
     prepareHeaders: (headers) => {
-
       headers.set("Content-Type", "application/json");
       return headers;
     },
   }),
-  tagTypes:["User"],
+  tagTypes: ["User"],
   endpoints: (builder) => ({
+
+    // 🔐 AUTH
     registerUser: builder.mutation({
       query: (newUser) => ({
         url: "/register",
@@ -21,6 +22,7 @@ const authApi = createApi({
         body: newUser,
       }),
     }),
+
     loginUser: builder.mutation({
       query: (credentials) => ({
         url: "/login",
@@ -28,49 +30,61 @@ const authApi = createApi({
         body: credentials,
       }),
     }),
+
     logoutUser: builder.mutation({
       query: () => ({
         url: "/logout",
         method: "POST",
-      })
-    }),
-    getUser: builder.query({
-      query: () => ({
-        url: "/users",
-        method: "GET",
       }),
-      refetchOneMount: true,
-      invalidatesTags: ["Users"],
     }),
+
+    // 👥 ADMIN — GET ALL USERS
+    getAllUsers: builder.query({
+      query: () => "/users",
+      providesTags: ["User"],
+    }),
+
+    // ❌ DELETE USER (ADMIN)
     deleteUser: builder.mutation({
       query: (userId) => ({
         url: `/users/${userId}`,
         method: "DELETE",
-        body: credentials,
       }),
-      invalidatesTags: ["Users"],
+      invalidatesTags: ["User"],
     }),
+
+    // 🔄 UPDATE USER ROLE (ADMIN)
     updateUserRole: builder.mutation({
       query: ({ userId, role }) => ({
         url: `/users/${userId}`,
         method: "PUT",
         body: { role },
       }),
-      refetchOneMount: true,
-      invalidatesTags: ["Users"],
+      invalidatesTags: ["User"],
     }),
+
+    // ✏️ EDIT PROFILE (USER)
     editProfile: builder.mutation({
-      query: ({ profileData }) => ({
-        url: `/edit-profil`,
+      query: (profileData) => ({
+        url: `/edit-profile`,
         method: "PATCH",
-        body: profileData
+        body: profileData,
       }),
     }),
   }),
 });
 
+export const {
+  useRegisterUserMutation,
+  useLoginUserMutation,
+  useLogoutUserMutation,
 
+  // ✅ IMPORTANT
+  useGetAllUsersQuery,
+  useDeleteUserMutation,
+  useUpdateUserRoleMutation,
 
+  useEditProfileMutation,
+} = authApi;
 
-export const { useRegisterUserMutation, useLoginUserMutation ,useLogoutUserMutation,useGetUserQuery,useDeleteUserMutation,useUpdateUserRoleMutation,useEditProfileMutation} = authApi;
 export default authApi;

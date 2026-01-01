@@ -8,41 +8,61 @@ import SingleProducts from "../pages/shop/productDetails/SingleProducts";
 import Login from "../components/Login";
 import Register from "../components/Register";
 
+import RequireAuth from "../components/protected/RequireAuth";
+import RequireAdmin from "../components/protected/RequireAdmin";
+
+import UserDashboard from "../pages/dashboard/user/UserDashboard";
+import AdminLayout from "../pages/dashboard/admin/AdminLayout";
+import AdminDashboard from "../pages/dashboard/admin/AdminDashboard";
+import ManageItems from "../pages/dashboard/admin/ManageItems";
+import AddProduct from "../pages/dashboard/user/AddProduct";
 const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
     children: [
+      { index: true, element: <Home /> },
+
+      { path: "categories/:categoryName", element: <CategoryPage /> },
+      { path: "search", element: <Search /> },
+      { path: "shop", element: <ShopPage /> },
+      { path: "shop/:id", element: <SingleProducts /> },
+
+      // 🔐 DASHBOARD ROUTES (MOVED HERE)
       {
-        index: true,
-        element: <Home />,
-      },
-      {
-        path: "categories/:categoryName",
-        element: <CategoryPage />,
-      },
-      {
-        path: "search",
-        element: <Search />,
-      },
-      {
-        path: "shop",
-        element: <ShopPage />,
-      },
-      {
-        path: "shop/:id",
-        element: <SingleProducts />,
+        path: "dashboard",
+        children: [
+          {
+            element: <RequireAuth />,
+            children: [
+              { path: "user", element: <UserDashboard /> },
+            ],
+          },
+          {
+            element: <RequireAdmin />,
+            children: [
+              {
+                path: "admin",
+                element: <AdminLayout />,
+                children: [
+                  { index: true, element: <AdminDashboard /> },
+
+                  { path: "manage-items", element: <ManageItems /> },
+                  { path: "add-product", element: <AddProduct /> },
+
+                ],
+              },
+            ],
+          },
+        ],
       },
     ],
   },
-  {
-    path: "/login",
-    element: <Login />,
-  },
-  {
-    path: "/register",
-    element: <Register />,
-  },
+
+  { path: "/login", element: <Login /> },
+  { path: "/register", element: <Register /> },
+  
+
 ]);
 
 export default router;
