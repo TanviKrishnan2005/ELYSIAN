@@ -1,28 +1,23 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-
-import products from "../../data/products.json";
+import { useFetchAllProductsQuery } from '../../redux/features/products/productsApi';
 import ProductCards from '../shop/ProductCards';
 
 const CategoryPage = () => {
   const { categoryName } = useParams();
-  const [filteredProduct, setFilteredProducts] = useState([]);
 
-  useEffect(() => {
-    console.log("Category from URL:", categoryName); // Debugging
-
-    // Filter by category (case-insensitive)
-    const filtered = products.filter(
-      (item) => item.category.toLowerCase() === categoryName.toLowerCase()
-    );
-
-    console.log("Filtered products:", filtered); // Debugging
-    setFilteredProducts(filtered);
-  }, [categoryName]);
+  const { data, isLoading, error } = useFetchAllProductsQuery({
+    category: categoryName,
+  });
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [categoryName]);
+
+  if (isLoading) return <p>Loading products...</p>;
+  if (error) return <p>Error loading products</p>;
+
+  const products = data?.products || [];
 
   return (
     <>
@@ -36,9 +31,8 @@ const CategoryPage = () => {
         </p>
       </section>
 
-      {/* product cards */}
       <div className="section__container">
-        <ProductCards products={filteredProduct} />
+        <ProductCards products={products} />
       </div>
     </>
   );
