@@ -1,21 +1,22 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-import { getBaseUrl } from '../../../utils/baseURL'
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { getBaseUrl } from "../../../utils/baseURL";
 
 const productsApi = createApi({
-  reducerPath: 'productsApi',
+  reducerPath: "productsApi",
   baseQuery: fetchBaseQuery({
     baseUrl: `${getBaseUrl()}/api/products`,
-    credentials: 'include'
+    credentials: "include", // 🔥 REQUIRED for admin routes
   }),
   tagTypes: ["Products"],
   endpoints: (builder) => ({
+
     fetchAllProducts: builder.query({
       query: ({ category, color, minPrice, maxPrice, page = 1, limit = 10 }) => {
         const queryParams = new URLSearchParams({
-          category: category || '',
-          color: color || '',
-          minPrice: minPrice?.toString() || '0',
-          maxPrice: maxPrice?.toString() || '',
+          category: category || "",
+          color: color || "",
+          minPrice: minPrice?.toString() || "0",
+          maxPrice: maxPrice?.toString() || "",
           page: page.toString(),
           limit: limit.toString(),
         }).toString();
@@ -34,13 +35,9 @@ const productsApi = createApi({
         url: "/create-product",
         method: "POST",
         body: newProduct,
-        credentials: "include"
+        credentials: "include",
       }),
       invalidatesTags: ["Products"],
-    }),
-
-    fetchRelatedProducts: builder.query({
-      query: (id) => `/related/${id}`,
     }),
 
     updateProduct: builder.mutation({
@@ -48,7 +45,7 @@ const productsApi = createApi({
         url: `/update-product/${id}`,
         method: "PATCH",
         body: rest,
-        credentials: "include"
+        credentials: "include",
       }),
       invalidatesTags: ["Products"],
     }),
@@ -57,9 +54,13 @@ const productsApi = createApi({
       query: (id) => ({
         url: `/${id}`,
         method: "DELETE",
-        credentials: "include"
+        credentials: "include",
       }),
-      invalidatesTags: (result, error, id) => [{ type: "Products", id }],
+      invalidatesTags: ["Products"],
+    }),
+
+    fetchRelatedProducts: builder.query({
+      query: (id) => `/related/${id}`,
     }),
   }),
 });
@@ -70,7 +71,7 @@ export const {
   useAddProductMutation,
   useUpdateProductMutation,
   useDeleteProductMutation,
-  useFetchRelatedProductsQuery
+  useFetchRelatedProductsQuery,
 } = productsApi;
 
 export default productsApi;

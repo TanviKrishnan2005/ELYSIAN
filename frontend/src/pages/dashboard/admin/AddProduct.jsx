@@ -14,6 +14,7 @@ const AddProduct = () => {
     description: "",
   });
 
+  // Handle input change
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -21,18 +22,28 @@ const AddProduct = () => {
     });
   };
 
+  // Handle form submit
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // ✅ Basic validation
+    if (!formData.name || !formData.category || !formData.price) {
+      alert("Name, category and price are required");
+      return;
+    }
 
     try {
       await addProduct({
         ...formData,
         price: Number(formData.price),
-        oldPrice: Number(formData.oldPrice),
+        oldPrice: formData.oldPrice
+          ? Number(formData.oldPrice)
+          : undefined,
       }).unwrap();
 
       alert("Product added successfully ✅");
 
+      // Reset form
       setFormData({
         name: "",
         category: "",
@@ -43,7 +54,7 @@ const AddProduct = () => {
         description: "",
       });
     } catch (error) {
-      console.error(error);
+      console.error("Add product error:", error);
       alert("Failed to add product ❌");
     }
   };
@@ -60,7 +71,6 @@ const AddProduct = () => {
           placeholder="Product Name"
           value={formData.name}
           onChange={handleChange}
-          required
           className="w-full border p-2 rounded"
         />
 
@@ -70,7 +80,6 @@ const AddProduct = () => {
           placeholder="Category"
           value={formData.category}
           onChange={handleChange}
-          required
           className="w-full border p-2 rounded"
         />
 
@@ -89,7 +98,6 @@ const AddProduct = () => {
           placeholder="Price"
           value={formData.price}
           onChange={handleChange}
-          required
           className="w-full border p-2 rounded"
         />
 
@@ -123,7 +131,7 @@ const AddProduct = () => {
         <button
           type="submit"
           disabled={isLoading}
-          className="bg-red-600 text-white px-6 py-2 rounded hover:bg-red-700"
+          className="bg-red-600 text-white px-6 py-2 rounded hover:bg-red-700 disabled:opacity-60"
         >
           {isLoading ? "Adding..." : "Add Product"}
         </button>

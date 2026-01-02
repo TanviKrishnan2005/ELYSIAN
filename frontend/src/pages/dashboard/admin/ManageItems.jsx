@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import {
   useFetchAllProductsQuery,
   useDeleteProductMutation,
@@ -17,10 +18,10 @@ const ManageItems = () => {
 
     try {
       await deleteProduct(id).unwrap();
-      alert("Product deleted successfully");
+      alert("Product deleted successfully ✅");
     } catch (error) {
-      console.error("Delete failed", error);
-      alert("Failed to delete product");
+      console.error(error);
+      alert("Failed to delete product ❌");
     }
   };
 
@@ -38,11 +39,11 @@ const ManageItems = () => {
           <table className="w-full border border-gray-200">
             <thead className="bg-gray-100">
               <tr>
-                <th className="border p-2 text-left">#</th>
+                <th className="border p-2">#</th>
                 <th className="border p-2 text-left">Product Name</th>
                 <th className="border p-2 text-left">Category</th>
-                <th className="border p-2 text-left">Price</th>
-                <th className="border p-2 text-center">Delete</th>
+                <th className="border p-2">Price</th>
+                <th className="border p-2 text-center">Actions</th>
               </tr>
             </thead>
 
@@ -53,7 +54,16 @@ const ManageItems = () => {
                   <td className="border p-2">{product.name}</td>
                   <td className="border p-2">{product.category}</td>
                   <td className="border p-2">${product.price}</td>
-                  <td className="border p-2 text-center">
+
+                  {/* ✅ EDIT + DELETE */}
+                  <td className="border p-2 text-center space-x-2">
+                    <Link
+                      to={`/dashboard/admin/edit-product/${product._id}`}
+                      className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
+                    >
+                      Edit
+                    </Link>
+
                     <button
                       onClick={() => handleDelete(product._id)}
                       className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
