@@ -5,12 +5,19 @@ import {
 
 const AdminOrders = () => {
   const { data: orders = [], isLoading } = useGetAllOrdersQuery();
-  const [updateOrderStatus] = useUpdateOrderStatusMutation();
+  const [updateOrderStatus, { isLoading: updating }] =
+    useUpdateOrderStatusMutation();
 
   if (isLoading) return <p>Loading orders...</p>;
 
-  const handleStatusChange = async (id, status) => {
-    await updateOrderStatus({ id, status });
+  const handleStatusChange = async (orderId, status) => {
+    try {
+      await updateOrderStatus({ orderId, status }).unwrap();
+      alert("Order status updated ✅");
+    } catch (error) {
+      console.error("Failed to update status:", error);
+      alert("Failed to update order status ❌");
+    }
   };
 
   return (
@@ -32,10 +39,14 @@ const AdminOrders = () => {
           {orders.map((order) => (
             <tr key={order._id}>
               <td className="border p-2">{order._id}</td>
+
               <td className="border p-2">
                 {order.userId?.email || "N/A"}
               </td>
-              <td className="border p-2">${order.totalAmount}</td>
+
+              <td className="border p-2">
+                ${order.totalAmount}
+              </td>
 
               <td className="border p-2">
                 <span className="px-2 py-1 rounded bg-gray-200">
@@ -46,6 +57,7 @@ const AdminOrders = () => {
               <td className="border p-2">
                 <select
                   value={order.status}
+                  disabled={updating}
                   onChange={(e) =>
                     handleStatusChange(order._id, e.target.value)
                   }
