@@ -8,31 +8,35 @@ const AdminLayout = () => {
   return (
     <div className="flex min-h-screen">
       <aside className="w-64 bg-gray-100 p-6">
-  <h2 className="text-xl font-semibold mb-6">Admin</h2>
+        <h2 className="text-xl font-semibold mb-6">Admin</h2>
 
-  <nav className="flex flex-col space-y-4 text-sm font-medium">
-    <NavLink
-      to="/dashboard/admin"
-      className={({ isActive }) =>
-        isActive ? "text-red-600" : "text-gray-700"
-      }
-    >
-      Dashboard
-    </NavLink>
+        <nav className="flex flex-col space-y-4 text-sm font-medium">
+          <NavLink
+            to="/dashboard/admin"
+            className={({ isActive }) =>
+              isActive ? "text-red-600" : "text-gray-700"
+            }
+          >
+            Dashboard
+          </NavLink>
 
-    <NavLink to="/dashboard/admin/manage-items">
-      Manage Items
-    </NavLink>
+          <NavLink to="/dashboard/admin/manage-items">
+            Manage Items
+          </NavLink>
 
-    <NavLink to="/dashboard/admin/orders">
-      All Orders
-    </NavLink>
+          <NavLink to="/dashboard/admin/orders">
+            All Orders
+          </NavLink>
 
-    <NavLink to="/dashboard/admin/add-product">
-      Add Product
-    </NavLink>
-  </nav>
-</aside>
+          <NavLink to="/dashboard/admin/add-product">
+            Add Product
+          </NavLink>
+          <NavLink to="/dashboard/admin/users">
+            Users
+          </NavLink>
+
+        </nav>
+      </aside>
 
 
       <main className="flex-1 p-8">
