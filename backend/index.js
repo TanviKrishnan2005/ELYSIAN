@@ -22,7 +22,9 @@ app.use(cors({
 //routes
 const authRoutes  = require('./src/users/user.route');
 const productRoutes = require('./src/products/products.route');
-const reviewRoutes = require('./src/reviews/reviews.router')
+const reviewRoutes = require('./src/reviews/reviews.router');
+const orderRoutes = require("./src/orders/order.route");
+app.use("/api/orders", orderRoutes);
 
 app.use('/api/auth',authRoutes);
 app.use('/api/products',productRoutes);

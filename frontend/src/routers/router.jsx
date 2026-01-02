@@ -19,6 +19,7 @@ import AddProduct from "../pages/dashboard/admin/AddProduct";
 import AllOrders from "../pages/dashboard/admin/AllOrders";
 import EditProduct from "../pages/dashboard/admin/EditProduct";
 import Users from "../pages/dashboard/admin/Users";
+import AdminOrders from "../pages/dashboard/admin/AdminOrders";
 
 const router = createBrowserRouter([
   {
@@ -54,8 +55,10 @@ const router = createBrowserRouter([
                   { path: "manage-items", element: <ManageItems /> },
                   { path: "add-product", element: <AddProduct /> },
                   { path: "edit-product/:id", element: <EditProduct /> },
-                  { path: "orders", element: <AllOrders /> },
+                  // { path: "orders", element: <AllOrders /> },
                   { path: "users", element: <Users /> },
+                  { path: "orders", element: <AdminOrders /> },
+
 
 
 
