@@ -2,6 +2,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { clearCart } from "../../../redux/features/cart/cartSlice";
 import { useCreateOrderMutation } from "../../../redux/features/orders/ordersApi";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 const OrderSummary = () => {
   const dispatch = useDispatch();
@@ -14,60 +15,57 @@ const OrderSummary = () => {
     tax,
     taxRate,
     grandTotal,
-  } = useSelector((state) => state.cart);
+  } = useSelector((store) => store.cart);
 
-  const user = useSelector((state) => state.auth.user);
+  const user = useSelector((store) => store.auth.user);
 
   const [createOrder, { isLoading }] = useCreateOrderMutation();
 
   const handleClearCart = () => {
     dispatch(clearCart());
+    toast.success("Cart cleared 🧹");
   };
 
   const handleCheckout = async () => {
     if (!user) {
-      alert("Please login to place order");
+      toast.error("Please login to place order");
       navigate("/login");
       return;
     }
 
     try {
       await createOrder({
-        items: products.map((p) => ({
-          productId: p._id,
-          name: p.name,
-          price: p.price,
-          quantity: p.quantity,
-        })),
+        items: products,
         totalAmount: grandTotal,
       }).unwrap();
 
       dispatch(clearCart());
-      alert("Order placed successfully ✅");
-      navigate("/dashboard/user");
+      toast.success("Order placed successfully 🎉");
+      navigate("/dashboard/user/orders");
     } catch (error) {
-  console.error("FULL CHECKOUT ERROR:", error);
-  alert(error?.data?.message || "Failed to place order ❌");
-}
-
+      console.error(error);
+      toast.error("Failed to place order ❌");
+    }
   };
 
   return (
-    <div className="bg-[#f4e5ec] mt-5 rounded">
-      <div className="p-4 space-y-2">
-        <h3 className="font-bold text-lg">Order Summary</h3>
-        <p>Items: {selectedItems}</p>
-        <p>Total: ${totalPrice.toFixed(2)}</p>
+    <div className="bg-[#f4e5ec] mt-5 rounded text-base">
+      <div className="px-6 py-4 space-y-3">
+        <h2 className="text-xl font-bold">Order Summary</h2>
+
+        <p>Selected Items: {selectedItems}</p>
+        <p>Total Price: ${totalPrice.toFixed(2)}</p>
         <p>Tax ({taxRate * 100}%): ${tax.toFixed(2)}</p>
-        <p className="font-bold">
+
+        <h3 className="font-bold text-lg">
           Grand Total: ${grandTotal.toFixed(2)}
-        </p>
+        </h3>
       </div>
 
-      <div className="p-4 space-y-2">
+      <div className="px-6 pb-6 space-y-3">
         <button
           onClick={handleClearCart}
-          className="w-full bg-red-500 text-white py-2 rounded"
+          className="w-full bg-red-500 px-3 py-2 text-white rounded-md"
         >
           Clear Cart
         </button>
@@ -75,9 +73,9 @@ const OrderSummary = () => {
         <button
           onClick={handleCheckout}
           disabled={isLoading}
-          className="w-full bg-blue-600 text-white py-2 rounded"
+          className="w-full bg-blue-600 px-3 py-2 text-white rounded-md"
         >
-          {isLoading ? "Placing Order..." : "CHECKOUT"}
+          {isLoading ? "Placing Order..." : "Checkout"}
         </button>
       </div>
     </div>

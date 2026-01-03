@@ -1,16 +1,11 @@
-import { Link } from "react-router-dom";
 import {
   useGetAllOrdersQuery,
   useUpdateOrderStatusMutation,
 } from "../../../redux/features/orders/ordersApi";
+import toast from "react-hot-toast";
 
 const AdminOrders = () => {
-  const {
-    data: orders = [],
-    isLoading,
-    error,
-  } = useGetAllOrdersQuery();
-
+  const { data: orders = [], isLoading, error } = useGetAllOrdersQuery();
   const [updateOrderStatus, { isLoading: updating }] =
     useUpdateOrderStatusMutation();
 
@@ -20,10 +15,10 @@ const AdminOrders = () => {
   const handleStatusChange = async (orderId, status) => {
     try {
       await updateOrderStatus({ orderId, status }).unwrap();
-      alert("Order status updated ✅");
+      toast.success("Order status updated ✅");
     } catch (error) {
-      console.error("Failed to update status:", error);
-      alert("Failed to update order status ❌");
+      console.error(error);
+      toast.error("Failed to update order ❌");
     }
   };
 
@@ -45,30 +40,12 @@ const AdminOrders = () => {
         <tbody>
           {orders.map((order) => (
             <tr key={order._id}>
-              {/* ✅ CLICKABLE ORDER ID */}
-              <td className="border p-2">
-                <Link
-                  to={`/dashboard/admin/orders/${order._id}`}
-                  className="text-blue-600 underline"
-                >
-                  {order._id}
-                </Link>
-              </td>
-
+              <td className="border p-2">{order._id}</td>
               <td className="border p-2">
                 {order.userId?.email || "N/A"}
               </td>
-
-              <td className="border p-2">
-                ${order.totalAmount}
-              </td>
-
-              <td className="border p-2">
-                <span className="px-2 py-1 rounded bg-gray-200">
-                  {order.status}
-                </span>
-              </td>
-
+              <td className="border p-2">${order.totalAmount}</td>
+              <td className="border p-2">{order.status}</td>
               <td className="border p-2">
                 <select
                   value={order.status}
