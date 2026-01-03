@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useUpdateProfileMutation } from "../../../redux/features/auth/authApi";
+import { useEditProfileMutation } from "../../../redux/features/auth/authApi";
 import { setUser } from "../../../redux/features/auth/authSlice";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
@@ -10,7 +10,7 @@ const EditProfile = () => {
   const navigate = useNavigate();
 
   const user = useSelector((state) => state.auth.user);
-  const [updateProfile, { isLoading }] = useUpdateProfileMutation();
+  const [editProfile, { isLoading }] = useEditProfileMutation();
 
   const [formData, setFormData] = useState({
     username: user?.username || "",
@@ -19,20 +19,26 @@ const EditProfile = () => {
   });
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      const res = await updateProfile(formData).unwrap();
+      const res = await editProfile(formData).unwrap();
+
+      // Update Redux + localStorage
       dispatch(setUser({ user: res.user }));
-      toast.success("Profile updated successfully ✨");
+
+      toast.success("Profile updated successfully ");
       navigate("/dashboard/user/profile");
     } catch (error) {
       console.error(error);
-      toast.error("Failed to update profile ❌");
+      toast.error("Failed to update profile ");
     }
   };
 
@@ -42,34 +48,36 @@ const EditProfile = () => {
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <input
+          type="text"
           name="username"
           value={formData.username}
           onChange={handleChange}
-          className="w-full border p-2 rounded"
           placeholder="Username"
+          className="w-full border p-2 rounded"
         />
 
         <input
+          type="text"
           name="profession"
           value={formData.profession}
           onChange={handleChange}
-          className="w-full border p-2 rounded"
           placeholder="Profession"
+          className="w-full border p-2 rounded"
         />
 
         <textarea
           name="bio"
           value={formData.bio}
           onChange={handleChange}
-          className="w-full border p-2 rounded"
           rows="4"
           placeholder="Bio"
+          className="w-full border p-2 rounded"
         />
 
         <button
           type="submit"
           disabled={isLoading}
-          className="bg-blue-600 text-white px-6 py-2 rounded"
+          className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700"
         >
           {isLoading ? "Saving..." : "Save Changes"}
         </button>

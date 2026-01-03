@@ -60,10 +60,10 @@ const authApi = createApi({
       invalidatesTags: ["User"],
     }),
 
-    // ✏️ USER PROFILE (✅ SINGLE SOURCE OF TRUTH)
+    // ✏️ USER PROFILE (SINGLE SOURCE OF TRUTH)
     editProfile: builder.mutation({
       query: (profileData) => ({
-        url: "/update-profile", // ✅ matches backend
+        url: "/update-profile",
         method: "PATCH",
         body: profileData,
       }),
@@ -81,7 +81,7 @@ export const {
   useDeleteUserMutation,
   useUpdateUserRoleMutation,
 
-  // ✅ ONLY THIS ONE
+  // ✅ ONLY THIS PROFILE HOOK
   useEditProfileMutation,
 } = authApi;
 
