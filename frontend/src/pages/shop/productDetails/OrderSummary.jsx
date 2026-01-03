@@ -21,29 +21,43 @@ const OrderSummary = () => {
 
   const [createOrder, { isLoading }] = useCreateOrderMutation();
 
+  // 🧹 Clear cart
   const handleClearCart = () => {
     dispatch(clearCart());
     toast.success("Cart cleared 🧹");
   };
 
-  const handleCheckout = async () => {
+  // ✅ PLACE ORDER (no Stripe yet)
+  const handlePlaceOrder = async () => {
     if (!user) {
-      toast.error("Please login to place order");
+      toast.error("Please login to place an order");
       navigate("/login");
       return;
     }
 
+    if (products.length === 0) {
+      toast.error("Your cart is empty");
+      return;
+    }
+
     try {
-      await createOrder({
-        items: products,
-        totalAmount: grandTotal,
-      }).unwrap();
+      const orderPayload = {
+        items: products.map((item) => ({
+          productId: item._id,
+          name: item.name,
+          price: item.price,
+          quantity: item.quantity,
+        })),
+        totalAmount: Number(grandTotal.toFixed(2)),
+      };
+
+      await createOrder(orderPayload).unwrap();
 
       dispatch(clearCart());
       toast.success("Order placed successfully 🎉");
       navigate("/dashboard/user/orders");
     } catch (error) {
-      console.error(error);
+      console.error("ORDER ERROR:", error);
       toast.error("Failed to place order ❌");
     }
   };
@@ -71,11 +85,11 @@ const OrderSummary = () => {
         </button>
 
         <button
-          onClick={handleCheckout}
+          onClick={handlePlaceOrder}
           disabled={isLoading}
           className="w-full bg-blue-600 px-3 py-2 text-white rounded-md"
         >
-          {isLoading ? "Placing Order..." : "Checkout"}
+          {isLoading ? "Placing Order..." : "Place Order"}
         </button>
       </div>
     </div>

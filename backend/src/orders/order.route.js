@@ -26,6 +26,34 @@ router.post("/", verifyToken, async (req, res) => {
   }
 });
 
+
+// 💳 CREATE STRIPE PAYMENT INTENT (USER)
+router.post("/create-payment-intent", verifyToken, async (req, res) => {
+  try {
+    const { amount } = req.body;
+
+    if (!amount || amount <= 0) {
+      return res.status(400).send({ message: "Invalid amount" });
+    }
+
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: Math.round(amount * 100), // dollars → cents
+      currency: "usd",
+      automatic_payment_methods: {
+        enabled: true,
+      },
+    });
+
+    res.status(200).send({
+      clientSecret: paymentIntent.client_secret,
+    });
+  } catch (error) {
+    console.error("Stripe error:", error);
+    res.status(500).send({ message: "Stripe payment failed" });
+  }
+});
+ 
+
 // GET USER ORDERS (USER)  <<< MUST BE ABOVE :id
 router.get("/my-orders", verifyToken, async (req, res) => {
   try {
@@ -105,31 +133,6 @@ router.get("/:id", verifyToken, verifyAdmin, async (req, res) => {
   }
 });
 
-// 💳 CREATE STRIPE PAYMENT INTENT (USER)
-router.post("/create-payment-intent", verifyToken, async (req, res) => {
-  try {
-    const { amount } = req.body;
-
-    if (!amount) {
-      return res.status(400).send({ message: "Amount is required" });
-    }
-
-    const paymentIntent = await stripe.paymentIntents.create({
-      amount: Math.round(amount * 100), // dollars → cents
-      currency: "usd",
-      automatic_payment_methods: {
-        enabled: true,
-      },
-    });
-
-    res.status(200).send({
-      clientSecret: paymentIntent.client_secret,
-    });
-  } catch (error) {
-    console.error("Stripe error:", error);
-    res.status(500).send({ message: "Payment intent failed" });
-  }
-});
 
 
 
