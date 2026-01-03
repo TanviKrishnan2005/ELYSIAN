@@ -31,6 +31,22 @@ const ordersApi = createApi({
       }),
       invalidatesTags: ["Orders"],
     }),
+
+    //  USER ORDERS
+    getUserOrders: builder.query({
+      query: () => "/my-orders",
+      providesTags: ["Orders"],
+    }),
+
+    getUserOrderById: builder.query({
+      query: (orderId) => `/my-orders/${orderId}`,
+    }),
+
+    getOrderById: builder.query({
+      query: (id) => `/${id}`,
+    }),
+
+
   }),
 });
 
@@ -38,6 +54,10 @@ export const {
   useCreateOrderMutation,
   useGetAllOrdersQuery,
   useUpdateOrderStatusMutation,
+  useGetUserOrdersQuery,
+  useGetUserOrderByIdQuery,
+  useGetOrderByIdQuery,
+
 } = ordersApi;
 
 export default ordersApi;

@@ -1,14 +1,21 @@
+import { Link } from "react-router-dom";
 import {
   useGetAllOrdersQuery,
   useUpdateOrderStatusMutation,
 } from "../../../redux/features/orders/ordersApi";
 
 const AdminOrders = () => {
-  const { data: orders = [], isLoading } = useGetAllOrdersQuery();
+  const {
+    data: orders = [],
+    isLoading,
+    error,
+  } = useGetAllOrdersQuery();
+
   const [updateOrderStatus, { isLoading: updating }] =
     useUpdateOrderStatusMutation();
 
   if (isLoading) return <p>Loading orders...</p>;
+  if (error) return <p className="text-red-500">Failed to load orders</p>;
 
   const handleStatusChange = async (orderId, status) => {
     try {
@@ -38,7 +45,15 @@ const AdminOrders = () => {
         <tbody>
           {orders.map((order) => (
             <tr key={order._id}>
-              <td className="border p-2">{order._id}</td>
+              {/* ✅ CLICKABLE ORDER ID */}
+              <td className="border p-2">
+                <Link
+                  to={`/dashboard/admin/orders/${order._id}`}
+                  className="text-blue-600 underline"
+                >
+                  {order._id}
+                </Link>
+              </td>
 
               <td className="border p-2">
                 {order.userId?.email || "N/A"}
