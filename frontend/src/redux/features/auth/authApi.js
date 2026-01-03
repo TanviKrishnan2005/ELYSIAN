@@ -13,7 +13,6 @@ const authApi = createApi({
   }),
   tagTypes: ["User"],
   endpoints: (builder) => ({
-
     // 🔐 AUTH
     registerUser: builder.mutation({
       query: (newUser) => ({
@@ -38,13 +37,12 @@ const authApi = createApi({
       }),
     }),
 
-    // 👥 ADMIN — GET ALL USERS
+    // 👥 ADMIN
     getAllUsers: builder.query({
       query: () => "/users",
       providesTags: ["User"],
     }),
 
-    // ❌ DELETE USER (ADMIN)
     deleteUser: builder.mutation({
       query: (userId) => ({
         url: `/users/${userId}`,
@@ -53,7 +51,6 @@ const authApi = createApi({
       invalidatesTags: ["User"],
     }),
 
-    // 🔄 UPDATE USER ROLE (ADMIN)
     updateUserRole: builder.mutation({
       query: ({ userId, role }) => ({
         url: `/users/${userId}`,
@@ -63,13 +60,14 @@ const authApi = createApi({
       invalidatesTags: ["User"],
     }),
 
-    // ✏️ EDIT PROFILE (USER)
+    // ✏️ USER PROFILE (✅ SINGLE SOURCE OF TRUTH)
     editProfile: builder.mutation({
       query: (profileData) => ({
-        url: `/edit-profile`,
+        url: "/update-profile", // ✅ matches backend
         method: "PATCH",
         body: profileData,
       }),
+      invalidatesTags: ["User"],
     }),
   }),
 });
@@ -79,11 +77,11 @@ export const {
   useLoginUserMutation,
   useLogoutUserMutation,
 
-  // ✅ IMPORTANT
   useGetAllUsersQuery,
   useDeleteUserMutation,
   useUpdateUserRoleMutation,
 
+  // ✅ ONLY THIS ONE
   useEditProfileMutation,
 } = authApi;
 
