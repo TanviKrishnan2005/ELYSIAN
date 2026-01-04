@@ -1,6 +1,8 @@
 import { useDispatch, useSelector } from "react-redux";
 import { clearCart } from "../../../redux/features/cart/cartSlice";
-import { useCreateOrderMutation } from "../../../redux/features/orders/ordersApi";
+import {
+  useCreatePaymentIntentMutation,
+} from "../../../redux/features/orders/ordersApi";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 
@@ -19,7 +21,9 @@ const OrderSummary = () => {
 
   const user = useSelector((store) => store.auth.user);
 
-  const [createOrder, { isLoading }] = useCreateOrderMutation();
+  // 🔥 Stripe payment intent
+  const [createPaymentIntent, { isLoading }] =
+    useCreatePaymentIntentMutation();
 
   // 🧹 Clear cart
   const handleClearCart = () => {
@@ -27,8 +31,8 @@ const OrderSummary = () => {
     toast.success("Cart cleared 🧹");
   };
 
-  // ✅ PLACE ORDER (no Stripe yet)
-  const handlePlaceOrder = async () => {
+  // 💳 STRIPE CHECKOUT
+  const handleCheckout = async () => {
     if (!user) {
       toast.error("Please login to place an order");
       navigate("/login");
@@ -41,24 +45,23 @@ const OrderSummary = () => {
     }
 
     try {
-      const orderPayload = {
-        items: products.map((item) => ({
-          productId: item._id,
-          name: item.name,
-          price: item.price,
-          quantity: item.quantity,
-        })),
-        totalAmount: Number(grandTotal.toFixed(2)),
-      };
+      const res = await createPaymentIntent(grandTotal).unwrap();
 
-      await createOrder(orderPayload).unwrap();
-
-      dispatch(clearCart());
-      toast.success("Order placed successfully 🎉");
-      navigate("/dashboard/user/orders");
+      navigate("/dashboard/user/checkout", {
+        state: {
+          clientSecret: res.clientSecret,
+          items: products.map((item) => ({
+            productId: item._id,
+            name: item.name,
+            price: item.price,
+            quantity: item.quantity,
+          })),
+          totalAmount: Number(grandTotal.toFixed(2)),
+        },
+      });
     } catch (error) {
-      console.error("ORDER ERROR:", error);
-      toast.error("Failed to place order ❌");
+      console.error("PAYMENT ERROR:", error);
+      toast.error("Failed to start payment ❌");
     }
   };
 
@@ -85,11 +88,11 @@ const OrderSummary = () => {
         </button>
 
         <button
-          onClick={handlePlaceOrder}
+          onClick={handleCheckout}
           disabled={isLoading}
           className="w-full bg-blue-600 px-3 py-2 text-white rounded-md"
         >
-          {isLoading ? "Placing Order..." : "Place Order"}
+          {isLoading ? "Redirecting..." : "Checkout"}
         </button>
       </div>
     </div>

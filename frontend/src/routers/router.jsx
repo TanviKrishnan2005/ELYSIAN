@@ -21,6 +21,7 @@ import UserOrders from "../pages/dashboard/user/UserOrders";
 import UserOrderDetails from "../pages/dashboard/user/UserOrderDetails";
 import UserProfile from "../pages/dashboard/user/UserProfile";
 import EditProfile from "../pages/dashboard/user/EditProfile";
+import StripeCheckoutPage from "../pages/payment/StripeCheckoutPage";
 
 // Admin
 import AdminLayout from "../pages/dashboard/admin/AdminLayout";
@@ -57,7 +58,9 @@ const router = createBrowserRouter([
                   { path: "orders", element: <UserOrders /> },
                   { path: "orders/:id", element: <UserOrderDetails /> },
                   { path: "profile", element: <UserProfile /> },
-                  { path: "profile/edit", element: <EditProfile /> }, // ✅ FIX
+                  { path: "profile/edit", element: <EditProfile /> }, 
+                  { path: "checkout", element: <StripeCheckoutPage /> },
+
                 ],
               },
             ],
