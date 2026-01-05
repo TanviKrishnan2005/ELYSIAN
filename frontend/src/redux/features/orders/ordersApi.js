@@ -5,10 +5,12 @@ const ordersApi = createApi({
   reducerPath: "ordersApi",
   baseQuery: fetchBaseQuery({
     baseUrl: `${getBaseUrl()}/api/orders`,
-    credentials: "include", // ✅ REQUIRED
+    credentials: "include",
   }),
   tagTypes: ["Orders"],
   endpoints: (builder) => ({
+
+    // 🛒 CREATE ORDER
     createOrder: builder.mutation({
       query: (orderData) => ({
         url: "/",
@@ -18,11 +20,33 @@ const ordersApi = createApi({
       invalidatesTags: ["Orders"],
     }),
 
+    // 💳 STRIPE PAYMENT INTENT
+    createPaymentIntent: builder.mutation({
+      query: ({ amount }) => ({
+        url: "/create-payment-intent",
+        method: "POST",
+        body: { amount },
+      }),
+    }),
+
+    // 👤 USER ORDERS
+    getUserOrders: builder.query({
+      query: () => "/my-orders",
+      providesTags: ["Orders"],
+    }),
+
+    // 👮 ADMIN — ALL ORDERS
     getAllOrders: builder.query({
       query: () => "/",
       providesTags: ["Orders"],
     }),
 
+    // 👮 ADMIN — SINGLE ORDER
+    getOrderById: builder.query({
+      query: (orderId) => `/${orderId}`,
+    }),
+
+    // 👮 ADMIN — UPDATE STATUS
     updateOrderStatus: builder.mutation({
       query: ({ orderId, status }) => ({
         url: `/${orderId}`,
@@ -31,40 +55,16 @@ const ordersApi = createApi({
       }),
       invalidatesTags: ["Orders"],
     }),
-
-    //  USER ORDERS
-    getUserOrders: builder.query({
-      query: () => "/my-orders",
-      providesTags: ["Orders"],
-    }),
-
-    getUserOrderById: builder.query({
-      query: (orderId) => `/my-orders/${orderId}`,
-    }),
-
-    getOrderById: builder.query({
-      query: (id) => `/${id}`,
-    }),
-
-    createPaymentIntent: builder.mutation({
-  query: (amount) => ({
-    url: "/create-payment-intent",
-    method: "POST",
-    body: { amount },
-  }),
-}),
   }),
 });
 
 export const {
   useCreateOrderMutation,
-  useGetAllOrdersQuery,
-  useUpdateOrderStatusMutation,
-  useGetUserOrdersQuery,
-  useGetUserOrderByIdQuery,
-  useGetOrderByIdQuery,
   useCreatePaymentIntentMutation,
-
+  useGetUserOrdersQuery,
+  useGetAllOrdersQuery,
+  useGetOrderByIdQuery,     // ✅ NOW EXISTS
+  useUpdateOrderStatusMutation,
 } = ordersApi;
 
 export default ordersApi;

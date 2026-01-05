@@ -1,8 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 import { clearCart } from "../../../redux/features/cart/cartSlice";
-import {
-  useCreatePaymentIntentMutation,
-} from "../../../redux/features/orders/ordersApi";
+import { useCreatePaymentIntentMutation } from "../../../redux/features/orders/ordersApi";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 
@@ -21,7 +19,7 @@ const OrderSummary = () => {
 
   const user = useSelector((store) => store.auth.user);
 
-  // 🔥 Stripe payment intent
+  // 💳 Stripe payment intent
   const [createPaymentIntent, { isLoading }] =
     useCreatePaymentIntentMutation();
 
@@ -45,19 +43,13 @@ const OrderSummary = () => {
     }
 
     try {
-      const res = await createPaymentIntent(grandTotal).unwrap();
+      const res = await createPaymentIntent({
+        amount: Number(grandTotal.toFixed(2)),
+      }).unwrap();
 
+      // ✅ EXACTLY what you asked for
       navigate("/dashboard/user/checkout", {
-        state: {
-          clientSecret: res.clientSecret,
-          items: products.map((item) => ({
-            productId: item._id,
-            name: item.name,
-            price: item.price,
-            quantity: item.quantity,
-          })),
-          totalAmount: Number(grandTotal.toFixed(2)),
-        },
+        state: { clientSecret: res.clientSecret },
       });
     } catch (error) {
       console.error("PAYMENT ERROR:", error);

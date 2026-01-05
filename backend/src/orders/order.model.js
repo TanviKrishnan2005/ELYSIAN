@@ -7,6 +7,7 @@ const orderSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
+
     items: [
       {
         productId: {
@@ -18,14 +19,26 @@ const orderSchema = new mongoose.Schema(
         quantity: Number,
       },
     ],
+
     totalAmount: {
       type: Number,
       required: true,
     },
+
+    // 🔥 ORDER STATUS
     status: {
       type: String,
-      enum: ["pending", "processing", "completed"],
+      enum: ["pending", "paid", "processing", "completed", "cancelled"],
       default: "pending",
+    },
+
+    // 💳 STRIPE DATA
+    paymentIntentId: {
+      type: String,
+    },
+
+    paidAt: {
+      type: Date,
     },
   },
   { timestamps: true }
