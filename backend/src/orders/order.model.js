@@ -25,20 +25,15 @@ const orderSchema = new mongoose.Schema(
       required: true,
     },
 
-    // 🔥 ORDER STATUS
     status: {
       type: String,
-      enum: ["pending", "paid", "processing", "completed", "cancelled"],
+      enum: ["pending", "processing", "completed"],
       default: "pending",
     },
 
-    // 💳 STRIPE DATA
+    // 🔥 STEP 1 ADD THIS
     paymentIntentId: {
       type: String,
-    },
-
-    paidAt: {
-      type: Date,
     },
   },
   { timestamps: true }

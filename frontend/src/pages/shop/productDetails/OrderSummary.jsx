@@ -1,6 +1,8 @@
 import { useDispatch, useSelector } from "react-redux";
 import { clearCart } from "../../../redux/features/cart/cartSlice";
-import { useCreatePaymentIntentMutation } from "../../../redux/features/orders/ordersApi";
+import {
+  useCreatePaymentIntentMutation,
+} from "../../../redux/features/orders/ordersApi";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 
@@ -19,20 +21,17 @@ const OrderSummary = () => {
 
   const user = useSelector((store) => store.auth.user);
 
-  // 💳 Stripe payment intent
   const [createPaymentIntent, { isLoading }] =
     useCreatePaymentIntentMutation();
 
-  // 🧹 Clear cart
   const handleClearCart = () => {
     dispatch(clearCart());
     toast.success("Cart cleared 🧹");
   };
 
-  // 💳 STRIPE CHECKOUT
   const handleCheckout = async () => {
     if (!user) {
-      toast.error("Please login to place an order");
+      toast.error("Please login to continue");
       navigate("/login");
       return;
     }
@@ -44,15 +43,23 @@ const OrderSummary = () => {
 
     try {
       const res = await createPaymentIntent({
-        amount: Number(grandTotal.toFixed(2)),
+        amount: grandTotal,
       }).unwrap();
 
-      // ✅ EXACTLY what you asked for
       navigate("/dashboard/user/checkout", {
-        state: { clientSecret: res.clientSecret },
+        state: {
+          clientSecret: res.clientSecret,
+          items: products.map((item) => ({
+            productId: item._id,
+            name: item.name,
+            price: item.price,
+            quantity: item.quantity,
+          })),
+          totalAmount: Number(grandTotal.toFixed(2)),
+        },
       });
-    } catch (error) {
-      console.error("PAYMENT ERROR:", error);
+    } catch (err) {
+      console.error(err);
       toast.error("Failed to start payment ❌");
     }
   };
@@ -61,11 +68,9 @@ const OrderSummary = () => {
     <div className="bg-[#f4e5ec] mt-5 rounded text-base">
       <div className="px-6 py-4 space-y-3">
         <h2 className="text-xl font-bold">Order Summary</h2>
-
         <p>Selected Items: {selectedItems}</p>
         <p>Total Price: ${totalPrice.toFixed(2)}</p>
         <p>Tax ({taxRate * 100}%): ${tax.toFixed(2)}</p>
-
         <h3 className="font-bold text-lg">
           Grand Total: ${grandTotal.toFixed(2)}
         </h3>

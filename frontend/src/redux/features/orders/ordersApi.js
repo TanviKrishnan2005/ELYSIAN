@@ -20,7 +20,7 @@ const ordersApi = createApi({
       invalidatesTags: ["Orders"],
     }),
 
-    // 💳 STRIPE PAYMENT INTENT
+    // 💳 CREATE STRIPE PAYMENT INTENT  ✅ REQUIRED
     createPaymentIntent: builder.mutation({
       query: ({ amount }) => ({
         url: "/create-payment-intent",
@@ -35,18 +35,16 @@ const ordersApi = createApi({
       providesTags: ["Orders"],
     }),
 
-    // 👮 ADMIN — ALL ORDERS
+    // 👮 ADMIN
     getAllOrders: builder.query({
       query: () => "/",
       providesTags: ["Orders"],
     }),
 
-    // 👮 ADMIN — SINGLE ORDER
     getOrderById: builder.query({
       query: (orderId) => `/${orderId}`,
     }),
 
-    // 👮 ADMIN — UPDATE STATUS
     updateOrderStatus: builder.mutation({
       query: ({ orderId, status }) => ({
         url: `/${orderId}`,
@@ -60,10 +58,10 @@ const ordersApi = createApi({
 
 export const {
   useCreateOrderMutation,
-  useCreatePaymentIntentMutation,
+  useCreatePaymentIntentMutation, 
   useGetUserOrdersQuery,
   useGetAllOrdersQuery,
-  useGetOrderByIdQuery,     // ✅ NOW EXISTS
+  useGetOrderByIdQuery,
   useUpdateOrderStatusMutation,
 } = ordersApi;
 

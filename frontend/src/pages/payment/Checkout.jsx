@@ -19,7 +19,7 @@ const Checkout = ({ orderData, onSuccess }) => {
 
     setLoading(true);
 
-    const { error, paymentIntent } = await stripe.confirmPayment({
+    const { error } = await stripe.confirmPayment({
       elements,
       redirect: "if_required",
     });
@@ -31,9 +31,7 @@ const Checkout = ({ orderData, onSuccess }) => {
     }
 
     try {
-      // ✅ CREATE ORDER ONLY AFTER PAYMENT SUCCESS
       await createOrder(orderData).unwrap();
-
       dispatch(clearCart());
       toast.success("Payment successful 🎉 Order placed!");
       onSuccess();
