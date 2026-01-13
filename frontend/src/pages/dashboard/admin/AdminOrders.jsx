@@ -17,7 +17,6 @@ const AdminOrders = () => {
       await updateOrderStatus({ orderId, status }).unwrap();
       toast.success("Order status updated ✅");
     } catch (error) {
-      console.error(error);
       toast.error("Failed to update order ❌");
     }
   };
@@ -32,6 +31,7 @@ const AdminOrders = () => {
             <th className="border p-2">Order ID</th>
             <th className="border p-2">Customer</th>
             <th className="border p-2">Total</th>
+            <th className="border p-2">Payment</th>
             <th className="border p-2">Status</th>
             <th className="border p-2">Change Status</th>
           </tr>
@@ -44,12 +44,29 @@ const AdminOrders = () => {
               <td className="border p-2">
                 {order.userId?.email || "N/A"}
               </td>
-              <td className="border p-2">${order.totalAmount}</td>
-              <td className="border p-2">{order.status}</td>
+              <td className="border p-2">
+                ${Number(order.totalAmount).toFixed(2)}
+              </td>
+
+              {/* Payment Status */}
+              <td className="border p-2">
+                <span
+                  className={`px-2 py-1 rounded text-sm font-medium ${
+                    order.paymentStatus === "paid"
+                      ? "bg-green-100 text-green-700"
+                      : "bg-red-100 text-red-700"
+                  }`}
+                >
+                  {order.paymentStatus}
+                </span>
+              </td>
+
+              <td className="border p-2 capitalize">{order.status}</td>
+
               <td className="border p-2">
                 <select
                   value={order.status}
-                  disabled={updating}
+                  disabled={updating || order.paymentStatus !== "paid"}
                   onChange={(e) =>
                     handleStatusChange(order._id, e.target.value)
                   }

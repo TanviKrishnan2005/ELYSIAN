@@ -4,16 +4,10 @@ import { useGetUserOrdersQuery } from "../../../redux/features/orders/ordersApi"
 const UserOrders = () => {
   const { data: orders = [], isLoading, error } = useGetUserOrdersQuery();
 
-  if (isLoading) {
-    return <p className="p-6">Loading your orders...</p>;
-  }
+  if (isLoading) return <p className="p-6">Loading your orders...</p>;
 
   if (error) {
-    return (
-      <p className="p-6 text-red-500">
-        Failed to load orders
-      </p>
-    );
+    return <p className="p-6 text-red-500">Failed to load orders</p>;
   }
 
   if (orders.length === 0) {
@@ -50,26 +44,22 @@ const UserOrders = () => {
                 </p>
               </div>
 
+              {/* Payment Status */}
               <span
-                className={`px-3 py-1 rounded-full text-sm font-medium capitalize ${
-                  order.status === "completed"
+                className={`px-3 py-1 rounded-full text-sm font-medium ${
+                  order.paymentStatus === "paid"
                     ? "bg-green-100 text-green-700"
-                    : order.status === "processing"
-                    ? "bg-blue-100 text-blue-700"
-                    : "bg-yellow-100 text-yellow-700"
+                    : "bg-red-100 text-red-700"
                 }`}
               >
-                {order.status}
+                {order.paymentStatus === "paid" ? "Paid" : "Unpaid"}
               </span>
             </div>
 
-            {/* Items preview */}
+            {/* Items Preview */}
             <div className="divide-y">
               {order.items.slice(0, 2).map((item, index) => (
-                <div
-                  key={index}
-                  className="py-2 flex justify-between text-sm"
-                >
+                <div key={index} className="py-2 flex justify-between text-sm">
                   <span>
                     {item.name} × {item.quantity}
                   </span>

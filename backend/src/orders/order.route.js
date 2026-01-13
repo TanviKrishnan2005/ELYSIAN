@@ -15,16 +15,18 @@ router.post("/", verifyToken, async (req, res) => {
       userId: req.userId,
       items: req.body.items,
       totalAmount: req.body.totalAmount,
+      paymentIntentId: req.body.paymentIntentId, // 🔥
       status: "pending",
+      paymentStatus: "unpaid",
     });
 
     await order.save();
     res.status(201).send(order);
   } catch (error) {
-    console.error(error);
     res.status(500).send({ message: "Failed to create order" });
   }
 });
+
 
 
 // 💳 CREATE STRIPE PAYMENT INTENT (USER)

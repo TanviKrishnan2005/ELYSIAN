@@ -19,7 +19,7 @@ const Checkout = ({ orderData, onSuccess }) => {
 
     setLoading(true);
 
-    const { error } = await stripe.confirmPayment({
+    const { error, paymentIntent } = await stripe.confirmPayment({
       elements,
       redirect: "if_required",
     });
@@ -30,8 +30,17 @@ const Checkout = ({ orderData, onSuccess }) => {
       return;
     }
 
+    // 🔥 THIS WAS MISSING
+    const finalOrder = {
+      ...orderData,
+      paymentStatus: "paid",
+      paymentIntentId: paymentIntent.id,
+      paidAt: new Date().toISOString(),
+    };
+
     try {
-      await createOrder(orderData).unwrap();
+      await createOrder(finalOrder).unwrap();
+
       dispatch(clearCart());
       toast.success("Payment successful 🎉 Order placed!");
       onSuccess();

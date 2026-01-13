@@ -21,27 +21,34 @@ const UserOrderDetails = () => {
         Order ID: {order._id}
       </p>
 
+      {/* Payment Status */}
       <p className="mb-4">
-        Status:{" "}
-        <span className="font-medium capitalize">{order.status}</span>
+        Payment Status:{" "}
+        <span
+          className={`font-semibold ${
+            order.paymentStatus === "paid"
+              ? "text-green-600"
+              : "text-red-600"
+          }`}
+        >
+          {order.paymentStatus.toUpperCase()}
+        </span>
       </p>
 
+      {/* Items */}
       <div className="border rounded p-4 space-y-3 bg-white">
         {order.items.map((item, index) => (
-          <div
-            key={index}
-            className="flex justify-between border-b pb-2"
-          >
+          <div key={index} className="flex justify-between border-b pb-2">
             <span>
               {item.name} × {item.quantity}
             </span>
-            <span>${item.price}</span>
+            <span>${Number(item.price).toFixed(2)}</span>
           </div>
         ))}
       </div>
 
       <p className="mt-4 font-bold">
-        Total: ${order.totalAmount}
+        Total: ${Number(order.totalAmount).toFixed(2)}
       </p>
     </div>
   );

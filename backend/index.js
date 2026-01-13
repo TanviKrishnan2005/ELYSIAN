@@ -1,36 +1,52 @@
-const express = require('express');
-const mongoose = require('mongoose');
-const cors = require('cors')
-const app = express();
-require('dotenv').config()
-const cookieParser = require('cookie-parser')
+const express = require("express");
+const mongoose = require("mongoose");
+const cors = require("cors");
+const cookieParser = require("cookie-parser");
+const bodyParser = require("body-parser");
+require("dotenv").config();
 
-const bodyParser = require('body-parser');
+const app = express();
 const port = process.env.PORT || 5000;
 
+/* =========================
+   🔥 STRIPE WEBHOOK FIRST
+   ========================= */
+const stripeWebhook = require("./src/orders/stripe.webhook");
 
-//middleware
-app.use(express.json({limit:"25mb"}));
-//app.use(express.urlencoded({limit:"25mb"}))
+// ⚠️ MUST BE BEFORE express.json
+app.use("/api/stripe", stripeWebhook);
+
+/* =========================
+   NORMAL MIDDLEWARE
+   ========================= */
+app.use(express.json({ limit: "25mb" }));
 app.use(cookieParser());
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended:true}))
-app.use(cors({
-    origin:'http://localhost:5173',
-    credentials:true
-}))
-//routes
-const authRoutes  = require('./src/users/user.route');
-const productRoutes = require('./src/products/products.route');
-const reviewRoutes = require('./src/reviews/reviews.router');
+app.use(bodyParser.urlencoded({ extended: true }));
+
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+  })
+);
+
+/* =========================
+   ROUTES
+   ========================= */
+const authRoutes = require("./src/users/user.route");
+const productRoutes = require("./src/products/products.route");
+const reviewRoutes = require("./src/reviews/reviews.router");
 const orderRoutes = require("./src/orders/order.route");
+
+app.use("/api/auth", authRoutes);
+app.use("/api/products", productRoutes);
+app.use("/api/reviews", reviewRoutes);
 app.use("/api/orders", orderRoutes);
 
-app.use('/api/auth',authRoutes);
-app.use('/api/products',productRoutes);
-app.use('/api/reviews',reviewRoutes);
-
-// ✅ MongoDB Atlas Connection
+/* =========================
+   DATABASE
+   ========================= */
 async function main() {
   try {
     await mongoose.connect(process.env.DB_URL);
@@ -39,17 +55,16 @@ async function main() {
     console.error("❌ MongoDB connection error:", err);
   }
 
-  // ✅ Basic route
-app.get('/', (req, res) => {
-  res.send('Elysian server running.....');
-});
+  app.get("/", (req, res) => {
+    res.send("Elysian server running...");
+  });
 }
 
 main();
 
-
-
-// ✅ Start server
+/* =========================
+   START SERVER
+   ========================= */
 app.listen(port, () => {
   console.log(`🚀 Server running on http://localhost:${port}`);
 });

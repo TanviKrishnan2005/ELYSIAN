@@ -31,9 +31,19 @@ const orderSchema = new mongoose.Schema(
       default: "pending",
     },
 
-    // 🔥 STEP 1 ADD THIS
+    // 🔥 PAYMENT FIELDS (THIS WAS MISSING)
+    paymentStatus: {
+      type: String,
+      enum: ["unpaid", "paid"],
+      default: "unpaid",
+    },
+
     paymentIntentId: {
       type: String,
+    },
+
+    paidAt: {
+      type: Date,
     },
   },
   { timestamps: true }
