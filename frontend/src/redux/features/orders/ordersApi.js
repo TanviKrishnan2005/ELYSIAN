@@ -53,16 +53,28 @@ const ordersApi = createApi({
       }),
       invalidatesTags: ["Orders"],
     }),
+
+    // ✅ MARK ORDER AS PAID (AFTER STRIPE SUCCESS)
+    markOrderPaid: builder.mutation({
+      query: ({ orderId }) => ({
+        url: `/mark-paid/${orderId}`,
+        method: "PATCH",
+      }),
+      invalidatesTags: ["Orders"],
+    }),
+
   }),
 });
 
 export const {
   useCreateOrderMutation,
-  useCreatePaymentIntentMutation, 
+  useCreatePaymentIntentMutation,
+  useMarkOrderPaidMutation,   // 👈 REQUIRED
   useGetUserOrdersQuery,
   useGetAllOrdersQuery,
   useGetOrderByIdQuery,
   useUpdateOrderStatusMutation,
 } = ordersApi;
+
 
 export default ordersApi;

@@ -1,6 +1,9 @@
 import { useStripe, useElements, PaymentElement } from "@stripe/react-stripe-js";
 import { useState } from "react";
-import { useCreateOrderMutation } from "../../redux/features/orders/ordersApi";
+import {
+  useCreateOrderMutation,
+  useMarkOrderPaidMutation,
+} from "../../redux/features/orders/ordersApi";
 import { useDispatch } from "react-redux";
 import { clearCart } from "../../redux/features/cart/cartSlice";
 import toast from "react-hot-toast";
@@ -11,6 +14,7 @@ const Checkout = ({ orderData, onSuccess }) => {
   const dispatch = useDispatch();
 
   const [createOrder] = useCreateOrderMutation();
+  const [markOrderPaid] = useMarkOrderPaidMutation();
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
@@ -25,27 +29,23 @@ const Checkout = ({ orderData, onSuccess }) => {
     });
 
     if (error) {
-      toast.error(error.message || "Payment failed ❌");
+      toast.error(error.message);
       setLoading(false);
       return;
     }
 
-    // 🔥 THIS WAS MISSING
-    const finalOrder = {
-      ...orderData,
-      paymentStatus: "paid",
-      paymentIntentId: paymentIntent.id,
-      paidAt: new Date().toISOString(),
-    };
-
     try {
-      await createOrder(finalOrder).unwrap();
+      const order = await createOrder({
+        ...orderData,
+        paymentIntentId: paymentIntent.id,
+      }).unwrap();
+
+      await markOrderPaid(order._id).unwrap();
 
       dispatch(clearCart());
-      toast.success("Payment successful 🎉 Order placed!");
+      toast.success("Payment successful 🎉");
       onSuccess();
-    } catch (err) {
-      console.error(err);
+    } catch {
       toast.error("Order creation failed ❌");
     }
 
