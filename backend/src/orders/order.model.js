@@ -38,7 +38,6 @@ const orderSchema = new mongoose.Schema(
     },
 
     paymentIntentId: String,
-
     paidAt: Date,
   },
   { timestamps: true }

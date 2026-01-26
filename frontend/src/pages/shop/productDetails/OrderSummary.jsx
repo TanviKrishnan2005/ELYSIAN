@@ -1,8 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 import { clearCart } from "../../../redux/features/cart/cartSlice";
-import {
-  useCreatePaymentIntentMutation,
-} from "../../../redux/features/orders/ordersApi";
+import { useCreatePaymentIntentMutation } from "../../../redux/features/orders/ordersApi";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 
@@ -10,50 +8,39 @@ const OrderSummary = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const {
-    products,
-    selectedItems,
-    totalPrice,
-    tax,
-    taxRate,
-    grandTotal,
-  } = useSelector((store) => store.cart);
+  const { products, selectedItems, totalPrice, tax, taxRate, grandTotal } =
+    useSelector((store) => store.cart);
 
   const user = useSelector((store) => store.auth.user);
 
   const [createPaymentIntent, { isLoading }] =
     useCreatePaymentIntentMutation();
 
-  const handleClearCart = () => {
-    dispatch(clearCart());
-    toast.success("Cart cleared 🧹");
-  };
-
   const handleCheckout = async () => {
     if (!user) {
-      toast.error("Please login to continue");
+      toast.error("Please login first");
       navigate("/login");
       return;
     }
 
-    if (products.length === 0) {
-      toast.error("Your cart is empty");
+    if (!products.length) {
+      toast.error("Cart is empty");
       return;
     }
 
     try {
       const res = await createPaymentIntent({
-        amount: grandTotal,
+        amount: Number(grandTotal.toFixed(2)),
       }).unwrap();
 
       navigate("/dashboard/user/checkout", {
         state: {
           clientSecret: res.clientSecret,
-          items: products.map((item) => ({
-            productId: item._id,
-            name: item.name,
-            price: item.price,
-            quantity: item.quantity,
+          items: products.map((p) => ({
+            productId: p._id,
+            name: p.name,
+            price: p.price,
+            quantity: p.quantity,
           })),
           totalAmount: Number(grandTotal.toFixed(2)),
         },
@@ -78,7 +65,7 @@ const OrderSummary = () => {
 
       <div className="px-6 pb-6 space-y-3">
         <button
-          onClick={handleClearCart}
+          onClick={() => dispatch(clearCart())}
           className="w-full bg-red-500 px-3 py-2 text-white rounded-md"
         >
           Clear Cart

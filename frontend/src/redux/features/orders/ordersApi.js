@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { getBaseUrl } from "../../../utils/baseURL";
 
-const ordersApi = createApi({
+export const ordersApi = createApi({
   reducerPath: "ordersApi",
   baseQuery: fetchBaseQuery({
     baseUrl: `${getBaseUrl()}/api/orders`,
@@ -9,18 +9,15 @@ const ordersApi = createApi({
   }),
   tagTypes: ["Orders"],
   endpoints: (builder) => ({
-
-    // 🛒 CREATE ORDER
     createOrder: builder.mutation({
-      query: (orderData) => ({
+      query: (data) => ({
         url: "/",
         method: "POST",
-        body: orderData,
+        body: data,
       }),
       invalidatesTags: ["Orders"],
     }),
 
-    // 💳 CREATE STRIPE PAYMENT INTENT  ✅ REQUIRED
     createPaymentIntent: builder.mutation({
       query: ({ amount }) => ({
         url: "/create-payment-intent",
@@ -29,20 +26,18 @@ const ordersApi = createApi({
       }),
     }),
 
-    // 👤 USER ORDERS
     getUserOrders: builder.query({
       query: () => "/my-orders",
       providesTags: ["Orders"],
     }),
 
-    // 👮 ADMIN
     getAllOrders: builder.query({
       query: () => "/",
       providesTags: ["Orders"],
     }),
 
     getOrderById: builder.query({
-      query: (orderId) => `/${orderId}`,
+      query: (id) => `/${id}`,
     }),
 
     updateOrderStatus: builder.mutation({
@@ -53,28 +48,16 @@ const ordersApi = createApi({
       }),
       invalidatesTags: ["Orders"],
     }),
-
-    // ✅ MARK ORDER AS PAID (AFTER STRIPE SUCCESS)
-    markOrderPaid: builder.mutation({
-      query: ({ orderId }) => ({
-        url: `/mark-paid/${orderId}`,
-        method: "PATCH",
-      }),
-      invalidatesTags: ["Orders"],
-    }),
-
   }),
 });
 
 export const {
   useCreateOrderMutation,
   useCreatePaymentIntentMutation,
-  useMarkOrderPaidMutation,   // 👈 REQUIRED
   useGetUserOrdersQuery,
   useGetAllOrdersQuery,
   useGetOrderByIdQuery,
   useUpdateOrderStatusMutation,
 } = ordersApi;
-
 
 export default ordersApi;

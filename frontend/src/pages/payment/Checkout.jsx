@@ -1,9 +1,6 @@
 import { useStripe, useElements, PaymentElement } from "@stripe/react-stripe-js";
 import { useState } from "react";
-import {
-  useCreateOrderMutation,
-  useMarkOrderPaidMutation,
-} from "../../redux/features/orders/ordersApi";
+import { useCreateOrderMutation } from "../../redux/features/orders/ordersApi";
 import { useDispatch } from "react-redux";
 import { clearCart } from "../../redux/features/cart/cartSlice";
 import toast from "react-hot-toast";
@@ -14,12 +11,15 @@ const Checkout = ({ orderData, onSuccess }) => {
   const dispatch = useDispatch();
 
   const [createOrder] = useCreateOrderMutation();
-  const [markOrderPaid] = useMarkOrderPaidMutation();
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!stripe || !elements) return;
+
+    if (!stripe || !elements) {
+      toast.error("Stripe not ready yet");
+      return;
+    }
 
     setLoading(true);
 
@@ -29,23 +29,24 @@ const Checkout = ({ orderData, onSuccess }) => {
     });
 
     if (error) {
-      toast.error(error.message);
+      toast.error(error.message || "Payment failed ❌");
       setLoading(false);
       return;
     }
 
     try {
-      const order = await createOrder({
+      await createOrder({
         ...orderData,
+        paymentStatus: "paid",
         paymentIntentId: paymentIntent.id,
+        paidAt: new Date().toISOString(),
       }).unwrap();
-
-      await markOrderPaid(order._id).unwrap();
 
       dispatch(clearCart());
       toast.success("Payment successful 🎉");
       onSuccess();
-    } catch {
+    } catch (err) {
+      console.error(err);
       toast.error("Order creation failed ❌");
     }
 
@@ -55,9 +56,12 @@ const Checkout = ({ orderData, onSuccess }) => {
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <PaymentElement />
+
+      {/* 🔥 THIS BUTTON WAS YOUR PROBLEM */}
       <button
+        type="submit"
         disabled={!stripe || loading}
-        className="w-full bg-blue-600 text-white py-2 rounded"
+        className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-semibold disabled:opacity-50"
       >
         {loading ? "Processing..." : "Pay Now"}
       </button>
