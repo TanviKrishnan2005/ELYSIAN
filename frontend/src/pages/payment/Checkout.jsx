@@ -13,14 +13,24 @@ const Checkout = ({ orderData, onSuccess }) => {
   const [createOrder] = useCreateOrderMutation();
   const [loading, setLoading] = useState(false);
 
+  // ✅ Guard: prevent double payment
+  if (orderData?.paymentStatus === "paid") {
+    return (
+      <p className="text-center text-green-600 font-medium">
+        Order already paid ✅
+      </p>
+    );
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!stripe || !elements) {
-      toast.error("Stripe not ready yet");
+      toast.error("Stripe is still loading...");
       return;
     }
 
+    if (loading) return; // 🔒 extra safety
     setLoading(true);
 
     const { error, paymentIntent } = await stripe.confirmPayment({
@@ -57,7 +67,6 @@ const Checkout = ({ orderData, onSuccess }) => {
     <form onSubmit={handleSubmit} className="space-y-6">
       <PaymentElement />
 
-      {/* 🔥 THIS BUTTON WAS YOUR PROBLEM */}
       <button
         type="submit"
         disabled={!stripe || loading}

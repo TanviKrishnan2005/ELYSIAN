@@ -22,7 +22,7 @@ const UserOrderDetails = () => {
       </p>
 
       {/* Payment Status */}
-      <p className="mb-4">
+      <p className="mb-1">
         Payment Status:{" "}
         <span
           className={`font-semibold ${
@@ -34,6 +34,13 @@ const UserOrderDetails = () => {
           {order.paymentStatus.toUpperCase()}
         </span>
       </p>
+
+      {/* Paid Date */}
+      {order.paidAt && (
+        <p className="text-sm text-gray-500 mb-4">
+          Paid on {new Date(order.paidAt).toLocaleString()}
+        </p>
+      )}
 
       {/* Items */}
       <div className="border rounded p-4 space-y-3 bg-white">
