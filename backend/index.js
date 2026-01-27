@@ -2,18 +2,17 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
-const bodyParser = require("body-parser");
 require("dotenv").config();
 
 const app = express();
 const port = process.env.PORT || 5000;
 
 /* =========================
-   🔥 STRIPE WEBHOOK FIRST
+  STRIPE WEBHOOK FIRST
    ========================= */
 const stripeWebhook = require("./src/orders/stripe.webhook");
 
-// ⚠️ MUST BE BEFORE express.json
+// ⚠️ RAW BODY ONLY FOR STRIPE
 app.use("/api/stripe", stripeWebhook);
 
 /* =========================
@@ -21,8 +20,6 @@ app.use("/api/stripe", stripeWebhook);
    ========================= */
 app.use(express.json({ limit: "25mb" }));
 app.use(cookieParser());
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(
   cors({

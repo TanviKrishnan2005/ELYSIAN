@@ -3,7 +3,7 @@ const Order = require("./order.model");
 const verifyToken = require("../middleware/verifyToken");
 const verifyAdmin = require("../middleware/verifyAdmin");
 const stripe = require("../config/stripe");
-
+const bodyParser = require("body-parser");
 const router = express.Router();
 
 /* ============================
@@ -94,5 +94,50 @@ router.patch("/:id", verifyToken, verifyAdmin, async (req, res) => {
   );
   res.send(order);
 });
+
+// 🔔 STRIPE WEBHOOK (AUTO PAYMENT CONFIRM)
+router.post(
+  "/webhook",
+  bodyParser.raw({ type: "application/json" }),
+  async (req, res) => {
+    const sig = req.headers["stripe-signature"];
+
+    let event;
+
+    try {
+      event = stripe.webhooks.constructEvent(
+        req.body,
+        sig,
+        process.env.STRIPE_WEBHOOK_SECRET
+      );
+    } catch (err) {
+      console.error("❌ Webhook signature failed:", err.message);
+      return res.status(400).send(`Webhook Error: ${err.message}`);
+    }
+
+    // ✅ PAYMENT SUCCESS
+    if (event.type === "payment_intent.succeeded") {
+      const paymentIntent = event.data.object;
+
+      try {
+        const order = await Order.findOne({
+          paymentIntentId: paymentIntent.id,
+        });
+
+        if (order) {
+          order.paymentStatus = "paid";
+          order.paidAt = new Date();
+          await order.save();
+
+          console.log("✅ Order marked as PAID:", order._id);
+        }
+      } catch (err) {
+        console.error("❌ Order update failed:", err.message);
+      }
+    }
+
+    res.json({ received: true });
+  }
+);
 
 module.exports = router;
