@@ -5,7 +5,7 @@ const productsApi = createApi({
   reducerPath: "productsApi",
   baseQuery: fetchBaseQuery({
     baseUrl: `${getBaseUrl()}/api/products`,
-    credentials: "include", // 🔥 REQUIRED for admin routes
+    credentials: "include", 
   }),
   tagTypes: ["Products"],
   endpoints: (builder) => ({

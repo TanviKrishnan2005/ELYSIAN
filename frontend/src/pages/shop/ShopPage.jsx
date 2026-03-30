@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import ProductCards from './ProductCards';
 import ShopFiltering from './ShopFiltering';
 import { useFetchAllProductsQuery } from '../../redux/features/products/productsApi';
@@ -26,7 +26,7 @@ const ShopPage = () => {
 
   const { category, color, priceRange } = filterState;
 
-  // ✅ Handle empty priceRange safely
+  // ✅ Safe price handling
   const [minPrice, maxPrice] = priceRange
     ? priceRange.split('-').map(Number)
     : [0, Infinity];
@@ -45,13 +45,20 @@ const ShopPage = () => {
   const totalPages = data?.totalPages || 1;
   const totalProducts = data?.totalProducts || 0;
 
-  // Debug
-  console.log('Products:', products);
-
-  const clearFilters = () => {
+  // ✅ useCallback for stable function reference
+  const clearFilters = useCallback(() => {
     setFiltersState({ category: 'all', color: 'all', priceRange: '' });
     setCurrentPage(1);
-  };
+  }, []);
+
+  // ✅ Pagination logic
+  const startProduct = (currentPage - 1) * productsPerPage + 1;
+  const endProduct = startProduct + products.length - 1;
+
+  // ✅ useMemo for derived text
+  const paginationText = useMemo(() => {
+    return `Showing ${startProduct} to ${endProduct} of ${totalProducts} products`;
+  }, [startProduct, endProduct, totalProducts]);
 
   const handlePageChange = (pageNumber) => {
     if (pageNumber > 0 && pageNumber <= totalPages) {
@@ -62,18 +69,28 @@ const ShopPage = () => {
   if (isLoading) return <div>Loading products...</div>;
   if (error) return <div>Error loading products</div>;
 
-  const startProduct = (currentPage - 1) * productsPerPage + 1;
-  const endProduct = startProduct + products.length - 1;
-
   return (
     <>
-      <section className="section__container" style={{ backgroundColor: '#f4e5ec' }}>
+      {/* Header */}
+      <section
+        className="section__container"
+        style={{ backgroundColor: '#f4e5ec' }}
+      >
         <h2 className="section__header capitalize">Shop Page</h2>
         <p className="section__subheader">GO GET TO SHOPPING!</p>
       </section>
 
-      <section style={{ width: '100%', maxWidth: '1200px', margin: '0 auto', padding: '1rem' }}>
+      {/* Main Section */}
+      <section
+        style={{
+          width: '100%',
+          maxWidth: '1200px',
+          margin: '0 auto',
+          padding: '1rem',
+        }}
+      >
         <div style={{ display: 'flex', flexDirection: 'row', gap: '3rem' }}>
+          
           {/* Left: Filters */}
           <ShopFiltering
             filters={filterOptions}
@@ -84,14 +101,24 @@ const ShopPage = () => {
 
           {/* Right: Products */}
           <div className="flex-1">
-            <h3 style={{ fontSize: '1.25rem', fontWeight: 500, marginBottom: '1rem' }}>
-              Showing {startProduct} to {endProduct} of {totalProducts} products
+            
+            {/* Pagination Text */}
+            <h3
+              style={{
+                fontSize: '1.25rem',
+                fontWeight: 500,
+                marginBottom: '1rem',
+              }}
+            >
+              {paginationText}
             </h3>
 
+            {/* Product Cards */}
             <ProductCards products={products} />
 
-            {/* Pagination */}
+            {/* Pagination Buttons */}
             <div className="mt-6 flex justify-center items-center gap-2">
+              
               <button
                 disabled={currentPage === 1}
                 onClick={() => handlePageChange(currentPage - 1)}
@@ -121,6 +148,7 @@ const ShopPage = () => {
               >
                 Next
               </button>
+
             </div>
           </div>
         </div>
