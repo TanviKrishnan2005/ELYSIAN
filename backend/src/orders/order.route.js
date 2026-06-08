@@ -34,19 +34,26 @@ router.post("/", verifyToken, async (req, res) => {
 /* ============================
    STRIPE PAYMENT INTENT
 ============================ */
-router.post("/create-payment-intent", verifyToken, async (req, res) => {
+router.post("/create-payment-intent", async (req, res) => {
   try {
     const { amount } = req.body;
 
     const paymentIntent = await stripe.paymentIntents.create({
-      amount: Math.round(amount * 100),
+      amount,
       currency: "usd",
-      automatic_payment_methods: { enabled: true },
+      automatic_payment_methods: {
+        enabled: true,
+      },
     });
 
-    res.send({ clientSecret: paymentIntent.client_secret });
-  } catch (err) {
-    res.status(500).send({ message: "Stripe error" });
+    res.send({
+      clientSecret: paymentIntent.client_secret,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({
+      message: "Failed to create payment intent",
+    });
   }
 });
 
