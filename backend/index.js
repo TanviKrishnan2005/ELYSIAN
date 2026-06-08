@@ -21,13 +21,15 @@ app.use("/api/stripe", stripeWebhook);
 app.use(express.json({ limit: "25mb" }));
 app.use(cookieParser());
 
-app.use
-cors({
-  origin: [
-    "http://localhost:5173",
-  ],
-  credentials: true,
-})
+app.use(
+  cors({
+    origin: [
+      "http://localhost:5173",
+      "https://elysian-ebon.vercel.app",
+    ],
+    credentials: true,
+  })
+);
 
 /* =========================
    ROUTES
