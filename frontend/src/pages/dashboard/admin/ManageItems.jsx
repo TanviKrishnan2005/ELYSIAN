@@ -5,7 +5,11 @@ import {
 } from "../../../redux/features/products/productsApi";
 
 const ManageItems = () => {
-  const { data, isLoading, isError } = useFetchAllProductsQuery({});
+  const { data, isLoading, isError } = useFetchAllProductsQuery({
+    page:1,
+    limit:100,
+  });
+  console.log(data);
   const [deleteProduct] = useDeleteProductMutation();
 
   const products = data?.products || [];
