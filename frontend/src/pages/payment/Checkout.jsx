@@ -1,4 +1,8 @@
-import { useStripe, useElements, PaymentElement } from "@stripe/react-stripe-js";
+import {
+  useStripe,
+  useElements,
+  CardElement,
+} from "@stripe/react-stripe-js";
 import { useState } from "react";
 import { useCreateOrderMutation } from "../../redux/features/orders/ordersApi";
 import { useDispatch } from "react-redux";
@@ -13,51 +17,48 @@ const Checkout = ({ orderData, onSuccess }) => {
   const [createOrder] = useCreateOrderMutation();
   const [loading, setLoading] = useState(false);
 
-  // ✅ Guard: prevent double payment
-  if (orderData?.paymentStatus === "paid") {
-    return (
-      <p className="text-center text-green-600 font-medium">
-        Order already paid ✅
-      </p>
-    );
-  }
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!stripe || !elements) {
-      toast.error("Stripe is still loading...");
+      toast.error("Stripe is loading...");
       return;
     }
 
-    if (loading) return; // 🔒 extra safety
     setLoading(true);
 
-    const { error, paymentIntent } = await stripe.confirmPayment({
-      elements,
-      redirect: "if_required",
-    });
+    const cardElement = elements.getElement(CardElement);
+
+    const { error, paymentIntent } =
+      await stripe.confirmCardPayment(orderData.clientSecret, {
+        payment_method: {
+          card: cardElement,
+        },
+      });
 
     if (error) {
-      toast.error(error.message || "Payment failed ❌");
+      toast.error(error.message);
       setLoading(false);
       return;
     }
 
     try {
       await createOrder({
-        ...orderData,
+        items: orderData.items,
+        totalAmount: orderData.totalAmount,
         paymentStatus: "paid",
         paymentIntentId: paymentIntent.id,
         paidAt: new Date().toISOString(),
       }).unwrap();
 
       dispatch(clearCart());
+
       toast.success("Payment successful 🎉");
+
       onSuccess();
     } catch (err) {
       console.error(err);
-      toast.error("Order creation failed ❌");
+      toast.error("Order creation failed");
     }
 
     setLoading(false);
@@ -65,12 +66,14 @@ const Checkout = ({ orderData, onSuccess }) => {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-      <PaymentElement />
+      <div className="border p-4 rounded">
+        <CardElement />
+      </div>
 
       <button
         type="submit"
         disabled={!stripe || loading}
-        className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-semibold disabled:opacity-50"
+        className="w-full bg-blue-600 text-white py-3 rounded"
       >
         {loading ? "Processing..." : "Pay Now"}
       </button>

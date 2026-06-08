@@ -26,25 +26,23 @@ const StripeCheckoutPage = () => {
 }
 
   return (
-    <div className="max-w-lg mx-auto mt-10 p-6 bg-white rounded shadow">
-      <h2 className="text-2xl font-bold mb-6 text-center">
-        Secure Payment
-      </h2>
+  <div className="max-w-lg mx-auto mt-10 p-6 bg-white rounded shadow">
+    <h2 className="text-2xl font-bold mb-6 text-center">
+      Secure Payment
+    </h2>
 
-      {clientSecret && (
-  <Elements
-    stripe={stripePromise}
-    options={{ clientSecret }}
-    key={clientSecret}
-  >
-    <Checkout
-      orderData={{ items, totalAmount }}
-      onSuccess={() => navigate("/dashboard/user/orders")}
-    />
-  </Elements>
-)}
-    </div>
-  );
+    <Elements stripe={stripePromise}>
+      <Checkout
+        orderData={{
+          items,
+          totalAmount,
+          clientSecret,
+        }}
+        onSuccess={() => navigate("/dashboard/user/orders")}
+      />
+    </Elements>
+  </div>
+);
 };
 
 export default StripeCheckoutPage;
