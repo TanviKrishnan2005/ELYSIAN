@@ -1,96 +1,245 @@
-# ELYSIAN E-Commerce Web Application
+# ✨ ELYSIAN – Full Stack Fashion E-Commerce Platform
 
-## Overview
+ELYSIAN is a modern full-stack fashion e-commerce platform built using the MERN stack. The application provides a seamless shopping experience with secure authentication, product management, shopping cart functionality, order management, and Stripe payment integration.
 
-This project is a full-stack e-commerce web application that allows users to browse products, add items to a shopping cart, and complete secure online payments.
+## 🌐 Live Demo
 
-The application demonstrates modern frontend development practices using React and Redux along with secure payment processing using Stripe.
+Frontend: https://elysian-ebon.vercel.app
 
----
-
-## Features
-
-* Product listing interface
-* Add to cart functionality
-* Cart management
-* Secure checkout
-* Stripe payment integration
-* Order creation after successful payment
-* Responsive UI
+Backend API: https://elysian-2hml.onrender.com
 
 ---
 
-## Tech Stack
+## 📸 Features
+
+### 👤 Authentication & Authorization
+- User Registration
+- User Login & Logout
+- JWT Authentication
+- Secure HTTP-only Cookies
+- Role-Based Access Control
+- Admin & User Dashboards
+
+### 🛍️ Product Management
+- Browse Products
+- Product Categories
+- Product Filtering
+- Product Details Page
+- Related Products
+- Product Reviews
+- Product Ratings
+
+### 🛒 Shopping Cart
+- Add to Cart
+- Remove from Cart
+- Update Quantity
+- Cart Summary
+- Tax Calculation
+- Grand Total Calculation
+
+### 💳 Payments
+- Stripe Payment Integration
+- Secure Checkout
+- Payment Confirmation
+- Order Creation After Successful Payment
+
+### 📦 Order Management
+- View User Orders
+- Order History
+- Order Status Tracking
+- Admin Order Management
+
+### 👨‍💼 Admin Panel
+- Manage Products
+- Add Products
+- Edit Products
+- Delete Products
+- Manage Orders
+- Manage Users
+- Update User Roles
+
+---
+
+## 🛠️ Tech Stack
 
 ### Frontend
+- React.js
+- React Router
+- Redux Toolkit
+- RTK Query
+- Tailwind CSS
+- Stripe React SDK
+- React Hot Toast
 
-* React
-* Redux
-* CSS / Tailwind (or your styling choice)
+### Backend
+- Node.js
+- Express.js
+- MongoDB Atlas
+- Mongoose
+- JWT Authentication
+- Cookie Parser
+- CORS
+
+### Payment Gateway
+- Stripe
+
+### Deployment
+- Frontend: Vercel
+- Backend: Render
+- Database: MongoDB Atlas
+
+---
+
+## 📂 Project Structure
+
+```
+ELYSIAN/
+│
+├── frontend/
+│   ├── src/
+│   ├── public/
+│   └── package.json
+│
+├── backend/
+│   ├── src/
+│   ├── middleware/
+│   ├── models/
+│   ├── routes/
+│   └── package.json
+│
+└── README.md
+```
+
+---
+
+## 🚀 Installation
+
+### Clone Repository
+
+```bash
+git clone https://github.com/TanviKrishnan2005/ELYSIAN.git
+cd ELYSIAN
+```
+
+---
+
+## Backend Setup
+
+```bash
+cd backend
+npm install
+```
+
+Create a `.env` file:
+
+```env
+DB_URL=your_mongodb_connection_string
+JWT_SECRET_KEY=your_jwt_secret
+STRIPE_SECRET_KEY=your_stripe_secret
+STRIPE_WEBHOOK_SECRET=your_webhook_secret
+PORT=5000
+```
+
+Run Backend:
+
+```bash
+npm start
+```
+
+---
+
+## Frontend Setup
+
+```bash
+cd frontend
+npm install
+```
+
+Create `.env`:
+
+```env
+VITE_STRIPE_PUBLISHABLE_KEY=your_publishable_key
+```
+
+Run Frontend:
+
+```bash
+npm run dev
+```
+
+---
+
+## 🔐 Environment Variables
 
 ### Backend
 
-* Node.js
-* Express.js
+```env
+DB_URL=
+JWT_SECRET_KEY=
+STRIPE_SECRET_KEY=
+STRIPE_WEBHOOK_SECRET=
+PORT=
+```
 
-### Payment Processing
+### Frontend
 
-* Stripe API
-
----
-
-## Payment Flow
-
-1. User adds products to the cart.
-2. User proceeds to checkout.
-3. Frontend sends order details to backend.
-4. Backend creates a Stripe PaymentIntent.
-5. Stripe returns a client secret.
-6. Frontend confirms the payment using Stripe Elements.
-7. On successful payment, the order is created.
+```env
+VITE_STRIPE_PUBLISHABLE_KEY=
+```
 
 ---
 
-## Project Structure
+## 📈 Future Enhancements
 
-Frontend
-
-* components/
-* pages/
-* redux/
-* services/
-
-Backend
-
-* routes/
-* controllers/
-* payment integration
+- Wishlist Functionality
+- Product Search
+- Product Image Uploads
+- Email Notifications
+- Coupon System
+- Inventory Management
+- Sales Analytics Dashboard
+- Multi-Payment Support
 
 ---
 
-## Future Improvements
+## 🎯 Learning Outcomes
 
-* User authentication
-* Order history
-* Admin dashboard
-* Product reviews
-* Inventory management
-* Email receipts for orders
+This project helped strengthen my understanding of:
 
----
-
-## Learning Outcomes
-
-This project helped me understand:
-
-* React component architecture
-* State management with Redux
-* API communication between frontend and backend
-* Secure payment processing with Stripe
-* Building scalable frontend applications
+- Full Stack MERN Development
+- REST API Design
+- JWT Authentication
+- State Management with Redux Toolkit
+- RTK Query
+- MongoDB Data Modeling
+- Payment Gateway Integration
+- Deployment & Production Debugging
+- Role-Based Access Control
+- Real-World E-Commerce Architecture
 
 ---
 
-## Author
 
-Tanvi Lekshmi RM
+
+## 📸 Project Preview
+
+| Home Page | Shop Page |
+|-----------|-----------|
+| ![](./Screenshots/homepage.png) | ![](./Screenshots/shoppage.png) |
+
+| Shopping Cart | Payment |
+|---------------|---------|
+| ![](./Screenshots/cart.png) | ![](./Screenshots/payment.png) |
+
+| Admin Dashboard |
+|-----------------|
+| ![](./Screenshots/Adminpage.png) |
+
+## 👩‍💻 Author
+
+**Tanvi Lekshmi RM**
+
+GitHub:
+https://github.com/TanviKrishnan2005
+
+---
