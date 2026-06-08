@@ -2,7 +2,11 @@ const jwt = require("jsonwebtoken");
 
 const verifyToken = (req, res, next) => {
   try {
+    console.log("🍪 Cookies:", req.cookies);
+
     const token = req.cookies?.token;
+
+    console.log("🔑 Token:", token);
 
     if (!token) {
       return res.status(401).send({ message: "No token provided" });
@@ -10,7 +14,6 @@ const verifyToken = (req, res, next) => {
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
 
-    // attach user info to request
     req.userId = decoded.userId;
     req.role = decoded.role;
 
