@@ -12,6 +12,11 @@ const StripeCheckoutPage = () => {
   const navigate = useNavigate();
 
   const { clientSecret, items, totalAmount } = location.state || {};
+  console.log("CLIENT SECRET:", clientSecret);
+
+  if (!clientSecret) {
+  return <p>Loading payment...</p>;
+}
 
   if (!clientSecret || !items || !totalAmount) {
     navigate("/dashboard/user/orders");

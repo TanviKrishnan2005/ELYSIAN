@@ -32,7 +32,9 @@ const OrderSummary = () => {
       const res = await createPaymentIntent({
         amount: Number(grandTotal.toFixed(2)),
       }).unwrap();
-
+      
+      console.log("Payment Intent Response:", res);
+      
       navigate("/dashboard/user/checkout", {
         state: {
           clientSecret: res.clientSecret,
